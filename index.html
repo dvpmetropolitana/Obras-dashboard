@@ -335,12 +335,14 @@ function barHTML(rawVal) {
   let p = 0;
   if (rawVal !== null && rawVal !== undefined && rawVal !== '') {
     const s = String(rawVal).trim();
-    if (s.endsWith('%')) {
-      // Viene como "75%" → convertir a 0.75
+    // Si es el texto de barra con bloques █, extraer el número del final
+    const blockMatch = s.match(/(\d+)%\s*$/);
+    if (blockMatch) {
+      p = parseInt(blockMatch[1]) / 100;
+    } else if (s.endsWith('%')) {
       p = parseFloat(s) / 100;
     } else {
       p = parseFloat(s);
-      // Si viene como número > 1 (ej: 75 en vez de 0.75), normalizar
       if (p > 1) p = p / 100;
     }
   }
@@ -474,7 +476,7 @@ function renderMetro(rows) {
     <td style="white-space:nowrap">${fmtDate(r[0])}</td>
     <td style="max-width:280px;font-size:14px">${esc(r[1])}</td>
     <td style="white-space:nowrap">${fmtDate(r[6])}</td>
-    <td>${barHTML(r[7])}</td>
+    <td>${barHTML(r[8])}</td>
     <td style="white-space:nowrap">${fmtDate(r[9])}</td>
   </tr>`).join('');
   document.getElementById('metro').innerHTML = `
@@ -524,7 +526,7 @@ function renderRutas(rows) {
     tableRows += `<tr>
       <td style="max-width:220px">${esc(r[0])}</td>
       <td style="max-width:220px;color:var(--muted)">${esc(r[1])}</td>
-      <td>${barHTML(r[3])}</td>
+      <td>${barHTML(r[4])}</td>
       <td style="white-space:nowrap">${fmtDate(r[5])}</td>
     </tr>`;
     hasRows = true; count++;
