@@ -348,9 +348,9 @@ function barHTML(rawVal) {
 function estadoBadge(v) {
   if (!v) return '';
   const s = String(v).trim();
-  if (s.includes('🟢')) return '<span class="badge badge-green">● Completo</span>';
-  if (s.includes('🔴')) return '<span class="badge badge-red">● Suspendido</span>';
-  if (s.toLowerCase().includes('curso')) return '<span class="badge badge-yellow">● En curso</span>';
+  if (s.includes('🟢')) return '<span class="badge badge-green">✔ Completo</span>';
+  if (s.includes('🔴')) return '<span class="badge badge-red">✖ Suspendido</span>';
+  if (s.toLowerCase().includes('curso')) return '<span class="badge badge-yellow">↻ En curso</span>';
   return `<span class="badge badge-blue">${s}</span>`;
 }
 
@@ -389,8 +389,8 @@ async function loadAll() {
 
 function renderMetrics(termRows, metroRows, rutasRows) {
   const terms = termRows.slice(2).filter(r => r[1] && r[1].trim());
-  const completados = terms.filter(r => String(r[6]||'').includes('🟢')).length;
-  const suspendidos = terms.filter(r => String(r[6]||'').includes('🔴')).length;
+  const completados = terms.filter(r => String(r[7]||'').includes('🟢')).length;
+  const suspendidos = terms.filter(r => String(r[7]||'').includes('🔴')).length;
 
   const metro = metroRows.slice(2).filter(r => r[1] && r[1].trim());
   const rutas = rutasRows.filter(r => {
@@ -431,11 +431,17 @@ function renderMetrics(termRows, metroRows, rutasRows) {
 function renderTerminados(rows) {
   const data = rows.slice(2).filter(r => r[1] && r[1].trim());
   if (!data.length) { document.getElementById('terminados').innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
-  const trs = data.map(r => `<tr>
-    <td style="max-width:340px;font-size:14px">${esc(r[1])}</td>
-    <td>${estadoBadge(r[6])}</td>
-    <td style="white-space:nowrap">${fmtDate(r[7])}</td>
-  </tr>`).join('');
+  const trs = data.map(r => {
+    // Estado en col 7 (emoji), Fin en col 8 (fecha o texto como "Suspendido")
+    const estado = r[7] || '';
+    const fin = r[8] || '';
+    const finDisplay = String(fin).toLowerCase().includes('suspendido') ? '' : fmtDate(fin);
+    return `<tr>
+      <td style="max-width:340px;font-size:14px">${esc(r[1])}</td>
+      <td>${estadoBadge(estado)}</td>
+      <td style="white-space:nowrap">${finDisplay}</td>
+    </tr>`;
+  }).join('');
   document.getElementById('terminados').innerHTML = `
     <div class="tcard">
       <div class="tcard-header">
@@ -457,7 +463,7 @@ function renderMetro(rows) {
     <td style="max-width:280px;font-size:14px">${esc(r[1])}</td>
     <td style="white-space:nowrap">${fmtDate(r[6])}</td>
     <td>${barHTML(r[7])}</td>
-    <td style="white-space:nowrap">${fmtDate(r[8])}</td>
+    <td style="white-space:nowrap">${fmtDate(r[9])}</td>
   </tr>`).join('');
   document.getElementById('metro').innerHTML = `
     <div class="tcard">
@@ -507,7 +513,7 @@ function renderRutas(rows) {
       <td style="max-width:220px">${esc(r[0])}</td>
       <td style="max-width:220px;color:var(--muted)">${esc(r[1])}</td>
       <td>${barHTML(r[3])}</td>
-      <td style="white-space:nowrap">${fmtDate(r[4])}</td>
+      <td style="white-space:nowrap">${fmtDate(r[5])}</td>
     </tr>`;
     hasRows = true; count++;
   });
