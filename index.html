@@ -332,9 +332,21 @@ function fmtDate(v) {
 }
 
 function barHTML(rawVal) {
-  const p = Math.min(Math.max(parseFloat(rawVal) || 0, 0), 1);
+  let p = 0;
+  if (rawVal !== null && rawVal !== undefined && rawVal !== '') {
+    const s = String(rawVal).trim();
+    if (s.endsWith('%')) {
+      // Viene como "75%" → convertir a 0.75
+      p = parseFloat(s) / 100;
+    } else {
+      p = parseFloat(s);
+      // Si viene como número > 1 (ej: 75 en vez de 0.75), normalizar
+      if (p > 1) p = p / 100;
+    }
+  }
+  p = Math.min(Math.max(p || 0, 0), 1);
   let color;
-  if (p >= 1)       color = '#1DB87A';
+  if (p >= 1)        color = '#1DB87A';
   else if (p >= 0.5) color = '#F0A30A';
   else if (p > 0)    color = '#E8701A';
   else               color = '#E24B4A';
