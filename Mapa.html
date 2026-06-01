@@ -27,7 +27,7 @@
   --red:     #E24B4A;
   --purple:  #9B6DFF;
 }
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; overflow: hidden; }
+html, body { height: 100%; background: #E8EDF2; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; overflow: hidden; }
 
 .layout { display: grid; grid-template-rows: 56px 1fr; height: 100vh; }
 
@@ -145,7 +145,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .base-marker { background: var(--surface2); border: 2px solid var(--accent); border-radius: 8px; padding: 4px 6px; font-size: 11px; color: var(--accent); font-weight: 600; white-space: nowrap; }
 
 .loading-overlay {
-  position: fixed; inset: 0; background: var(--bg);
+  position: fixed; inset: 0; background: #E8EDF2;
   display: flex; align-items: center; justify-content: center;
   z-index: 9999; flex-direction: column; gap: 12px;
   transition: opacity 0.3s;
@@ -307,7 +307,7 @@ const map = L.map('map', {
   zoomControl: true,
 }).setView([-27.45, -58.98], 12);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '© OpenStreetMap © CARTO',
   subdomains: 'abcd', maxZoom: 19
 }).addTo(map);
@@ -471,11 +471,11 @@ async function loadAll() {
     ]);
 
     // Parse obras metro — headers row 2, data from row 3
-    // Cols: 0=Fecha 1=Tarea 2=Desc 3=Act 4=Pedido 5=Contacto 6=Inicio 7=% 8=Avance 9=Fin 10=Coords
+    // Cols: 0=Fecha 1=Tarea 2=Desc 3=Act 4=Pedido 5=Contacto 6=Inicio 7=% 8=Avance 9=Fin 11=Coords
     allObras = [];
     metroRows.slice(2).forEach(r => {
       if (!r[1] || !r[1].trim()) return;
-      const coords = parseCoords(r[10]);
+      const coords = parseCoords(r[11]);
       allObras.push({
         nombre: r[1].trim(),
         avance: r[8] || r[7] || '0',
@@ -489,8 +489,8 @@ async function loadAll() {
       const f = String(r[0]||'').trim();
       if (!f || f.includes('RUTA PROVINCIAL') || f === 'TAREA' ||
           f === 'TAREA PENDIENTE' || f.includes('OBRAS PENDIENTES') || f.includes('🛣')) return;
-      // Cols rutas: 0=Tarea 1=Desc 2=Inicio 3=% 4=Avance 5=Fin 6=Coords
-      const coords = parseCoords(r[6]);
+      // Cols rutas: 0=Tarea 1=Desc 2=Inicio 3=% 4=Avance 5=Fin 7=Coords
+      const coords = parseCoords(r[7]);
       allObras.push({
         nombre: r[0].trim(),
         avance: r[4] || r[3] || '0',
