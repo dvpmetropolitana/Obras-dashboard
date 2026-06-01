@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Obras — DVP 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #0A1929;
+  --surface: #0F2840;
+  --surface2:#152F4A;
+  --border:  rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text:    #E8F1FA;
+  --muted:   #7A9AB8;
+  --blue:    #1A5FA8;
+  --blue-lt: #2E80D8;
+  --accent:  #4EADFF;
+  --green:   #1DB87A;
+  --yellow:  #F0A30A;
+  --orange:  #E8701A;
+  --red:     #E24B4A;
+  --purple:  #9B6DFF;
+}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; overflow: hidden; }
+
+.layout { display: grid; grid-template-rows: 56px 1fr; height: 100vh; }
+
+/* Header */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  background: var(--surface);
+  border-bottom: 0.5px solid var(--border2);
+  z-index: 1000;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-icon { font-size: 20px; }
+.brand-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
+.brand-sub { font-size: 11px; color: var(--muted); margin-left: 8px; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.clock { font-family: 'DM Mono', monospace; font-size: 16px; color: var(--accent); }
+.refresh-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 7px;
+  border: 0.5px solid var(--border2);
+  background: var(--surface2); color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  cursor: pointer; transition: all 0.15s;
+}
+.refresh-btn:hover { background: var(--blue); color: var(--text); }
+.refresh-btn svg { width: 13px; height: 13px; }
+
+/* Main */
+.main { display: grid; grid-template-columns: 320px 1fr; height: 100%; overflow: hidden; }
+
+/* Sidebar */
+.sidebar {
+  background: var(--surface);
+  border-right: 0.5px solid var(--border2);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+.sidebar-section { border-bottom: 0.5px solid var(--border); }
+.sidebar-title {
+  padding: 12px 16px 8px;
+  font-size: 10px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sidebar-count {
+  background: var(--surface2); border: 0.5px solid var(--border);
+  border-radius: 99px; padding: 1px 7px; font-size: 10px; color: var(--muted);
+}
+
+/* Legend */
+.legend { padding: 10px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Obra items */
+.obra-item {
+  padding: 10px 16px;
+  border-bottom: 0.5px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.obra-item:hover { background: var(--surface2); }
+.obra-item.active { background: rgba(78,173,255,0.08); border-left: 2px solid var(--accent); }
+.obra-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+.obra-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.obra-tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 99px;
+  background: var(--surface2); color: var(--muted);
+  border: 0.5px solid var(--border);
+}
+.obra-tag.activo { background: rgba(29,184,122,0.12); color: var(--green); border-color: rgba(29,184,122,0.3); }
+.obra-tag.ruta { background: rgba(155,109,255,0.12); color: var(--purple); border-color: rgba(155,109,255,0.3); }
+
+/* Equipo items */
+.equipo-item {
+  padding: 8px 16px;
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: background 0.1s;
+}
+.equipo-item:hover { background: var(--surface2); }
+.equipo-icon { font-size: 18px; width: 28px; text-align: center; flex-shrink: 0; }
+.equipo-info { flex: 1; min-width: 0; }
+.equipo-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.equipo-obra { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.equipo-estado {
+  font-size: 10px; padding: 2px 7px; border-radius: 99px; flex-shrink: 0;
+  font-weight: 500;
+}
+.estado-activo  { background: rgba(29,184,122,0.15);  color: var(--green); }
+.estado-taller  { background: rgba(226,75,74,0.15);   color: var(--red); }
+.estado-sintarea{ background: rgba(240,163,10,0.15);  color: var(--yellow); }
+
+/* Map */
+#map { width: 100%; height: 100%; }
+.leaflet-container { background: #0A1929 !important; }
+
+/* Popup */
+.custom-popup { min-width: 220px; }
+.popup-title { font-size: 13px; font-weight: 600; color: #0D2137; margin-bottom: 8px; line-height: 1.3; }
+.popup-section { font-size: 11px; font-weight: 600; color: #3C5A78; text-transform: uppercase; letter-spacing: 0.5px; margin: 8px 0 4px; }
+.popup-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1B3A5C; margin-bottom: 3px; }
+.popup-empty { font-size: 12px; color: #7A9AB8; font-style: italic; }
+.popup-avance { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.popup-bar-track { flex: 1; height: 5px; background: #E8EDF2; border-radius: 99px; overflow: hidden; }
+.popup-bar-fill { height: 100%; border-radius: 99px; }
+.popup-pct { font-size: 11px; font-weight: 600; color: #1B3A5C; min-width: 30px; }
+
+/* Base marker */
+.base-marker { background: var(--surface2); border: 2px solid var(--accent); border-radius: 8px; padding: 4px 6px; font-size: 11px; color: var(--accent); font-weight: 600; white-space: nowrap; }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999; flex-direction: column; gap: 12px;
+  transition: opacity 0.3s;
+}
+.loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loading-spinner {
+  width: 32px; height: 32px; border: 2px solid var(--border2);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.loading-text { font-size: 13px; color: var(--muted); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes spin2 { to { transform: rotate(360deg); } }
+.spinning { animation: spin2 0.6s linear infinite; }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Cargando datos...</div>
+</div>
+
+<div class="layout">
+  <header class="header">
+    <div class="brand">
+      <span class="brand-icon">🗺️</span>
+      <span class="brand-title">Mapa de Obras</span>
+      <span class="brand-sub">DVP — Gran Resistencia 2026</span>
+    </div>
+    <div class="header-right">
+      <div class="clock" id="clock">--:--</div>
+      <button class="refresh-btn" onclick="loadAll()">
+        <svg id="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 4v6h-6M1 20v-6h6"/>
+          <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+        </svg>
+        Actualizar
+      </button>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="sidebar">
+      <!-- Leyenda -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Leyenda</div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#1DB87A"></div> Obra activa / en curso</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#4EADFF"></div> Obra sin iniciar</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#9B6DFF"></div> Ruta provincial</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#F0A30A"></div> Central Vialidad (Base)</div>
+        </div>
+      </div>
+
+      <!-- Obras -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Obras pendientes <span class="sidebar-count" id="obras-count">—</span></div>
+        <div id="obras-list"></div>
+      </div>
+
+      <!-- Equipos activos -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Equipos activos <span class="sidebar-count" id="equipos-count">—</span></div>
+        <div id="equipos-list"></div>
+      </div>
+
+      <!-- Cuadrillas -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Cuadrillas <span class="sidebar-count" id="cuadrillas-count">—</span></div>
+        <div id="cuadrillas-list"></div>
+      </div>
+    </div>
+
+    <div id="map"></div>
+  </div>
+</div>
+
+<script>
+const URLS = {
+  metro:      'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-Cy1gHNylNZFz4Lz8u9ZwfNsJW8BwLngea4UwVmlvjYplYuWUyjX2HDYJ094O6g/pub?gid=1895583428&single=true&output=csv',
+  rutas:      'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-Cy1gHNylNZFz4Lz8u9ZwfNsJW8BwLngea4UwVmlvjYplYuWUyjX2HDYJ094O6g/pub?gid=984773082&single=true&output=csv',
+  equipos:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-Cy1gHNylNZFz4Lz8u9ZwfNsJW8BwLngea4UwVmlvjYplYuWUyjX2HDYJ094O6g/pub?gid=956150976&single=true&output=csv',
+  cuadrillas: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-Cy1gHNylNZFz4Lz8u9ZwfNsJW8BwLngea4UwVmlvjYplYuWUyjX2HDYJ094O6g/pub?gid=514753246&single=true&output=csv'
+};
+
+// Vialidad Provincial base
+const BASE = { lat: -27.432986, lng: -59.009670, name: 'Central Vialidad Provincial' };
+
+// Íconos por tipo de equipo
+const ICONOS = {
+  'Motoniveladora':    '🟡',
+  'Camión':           '🔵',
+  'Retroexcavadora':  '🟠',
+  'Tractor':          '🟤',
+  'Minicargadora':    '🟣',
+  'Compactador':      '⚫',
+  'Cargadora Frontal':'🔴',
+};
+const ICONO_DEFAULT = '⚙️';
+
+function getIcono(tipo) { return ICONOS[tipo] || ICONO_DEFAULT; }
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  return lines.map(line => {
+    const cells = []; let cur = ''; let inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      if (line[i] === '"') { inQ = !inQ; }
+      else if (line[i] === ',' && !inQ) { cells.push(cur.trim()); cur = ''; }
+      else { cur += line[i]; }
+    }
+    cells.push(cur.trim());
+    return cells;
+  });
+}
+
+async function fetchCSV(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('Error cargando datos');
+  return parseCSV(await r.text());
+}
+
+function parseCoords(val) {
+  if (!val) return null;
+  const s = String(val).trim();
+  const m = s.match(/(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)/);
+  if (!m) return null;
+  return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+}
+
+function parsePct(val) {
+  if (!val) return 0;
+  const s = String(val).trim();
+  const m = s.match(/(\d+)%\s*$/);
+  if (m) return parseInt(m[1]) / 100;
+  const n = parseFloat(s);
+  if (!isNaN(n)) return n > 1 ? n / 100 : n;
+  return 0;
+}
+
+function barColor(p) {
+  if (p >= 1)   return '#1DB87A';
+  if (p >= 0.5) return '#F0A30A';
+  if (p > 0)    return '#E8701A';
+  return '#4EADFF';
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Leaflet map ──────────────────────────────────────────────────────────────
+const map = L.map('map', {
+  center: [-27.45, -58.98],
+  zoom: 12,
+  zoomControl: true,
+}).setView([-27.45, -58.98], 12);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO',
+  subdomains: 'abcd', maxZoom: 19
+}).addTo(map);
+
+// Marker layers
+const obraLayer    = L.layerGroup().addTo(map);
+const equipoLayer  = L.layerGroup().addTo(map);
+const baseLayer    = L.layerGroup().addTo(map);
+
+let allObras = [];
+let allEquipos = [];
+let allCuadrillas = [];
+let obraMarkers = {};
+
+// Base marker — Vialidad Provincial
+function drawBase() {
+  baseLayer.clearLayers();
+  const icon = L.divIcon({
+    className: '',
+    html: `<div style="background:#152F4A;border:2px solid #F0A30A;border-radius:10px;padding:5px 9px;font-size:11px;color:#F0A30A;font-weight:600;font-family:'DM Sans',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.4)">🏛 Central DVP</div>`,
+    iconAnchor: [60, 20]
+  });
+  L.marker([BASE.lat, BASE.lng], { icon })
+    .bindPopup(`<div class="custom-popup">
+      <div class="popup-title">🏛 Central Vialidad Provincial</div>
+      <div class="popup-item">📍 Base de operaciones y taller</div>
+    </div>`)
+    .addTo(baseLayer);
+}
+
+function makeObraMarker(obra) {
+  const pct = parsePct(obra.avance);
+  const color = obra.esRuta ? '#9B6DFF' : (pct > 0 ? '#1DB87A' : '#4EADFF');
+  const size = 14;
+
+  const equiposAsignados = allEquipos.filter(e =>
+    e.estado === 'Activo' && e.obra && obra.nombre &&
+    e.obra.trim().toLowerCase() === obra.nombre.trim().toLowerCase()
+  );
+  const cuadrillasAsignadas = allCuadrillas.filter(c =>
+    c.obra && obra.nombre &&
+    c.obra.trim().toLowerCase() === obra.nombre.trim().toLowerCase()
+  );
+
+  const equiposHTML = equiposAsignados.length
+    ? equiposAsignados.map(e => `<div class="popup-item">${getIcono(e.tipo)} ${esc(e.legajo)} — ${esc(e.tipo)}${e.propio === 'Alquilado' ? ' <span style="color:#E8701A;font-size:10px">(Alq.)</span>' : ''}</div>`).join('')
+    : `<div class="popup-empty">Sin equipos asignados</div>`;
+
+  const cuadrillasHTML = cuadrillasAsignadas.length
+    ? cuadrillasAsignadas.map(c => `<div class="popup-item">👷 ${esc(c.nombre)} — ${esc(c.encargado)}</div>`).join('')
+    : `<div class="popup-empty">Sin cuadrilla asignada</div>`;
+
+  const pctPct = Math.round(pct * 100);
+  const popupContent = `<div class="custom-popup">
+    <div class="popup-title">${esc(obra.nombre)}</div>
+    <div class="popup-avance">
+      <div class="popup-bar-track"><div class="popup-bar-fill" style="width:${pctPct}%;background:${barColor(pct)}"></div></div>
+      <span class="popup-pct">${pctPct}%</span>
+    </div>
+    <div class="popup-section">Equipos</div>
+    ${equiposHTML}
+    <div class="popup-section">Cuadrillas</div>
+    ${cuadrillasHTML}
+  </div>`;
+
+  const icon = L.divIcon({
+    className: '',
+    html: `<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;border:2px solid rgba(255,255,255,0.3);box-shadow:0 0 8px ${color}88;cursor:pointer"></div>`,
+    iconAnchor: [size/2, size/2]
+  });
+
+  return L.marker([obra.coords.lat, obra.coords.lng], { icon })
+    .bindPopup(popupContent, { maxWidth: 280 });
+}
+
+function drawObras() {
+  obraLayer.clearLayers();
+  obraMarkers = {};
+  const conCoords = allObras.filter(o => o.coords);
+  conCoords.forEach(obra => {
+    const m = makeObraMarker(obra);
+    m.addTo(obraLayer);
+    obraMarkers[obra.nombre] = m;
+  });
+}
+
+function renderSidebar() {
+  // Obras
+  const conCoords = allObras.filter(o => o.coords);
+  document.getElementById('obras-count').textContent = conCoords.length;
+  document.getElementById('obras-list').innerHTML = conCoords.map(o => {
+    const pct = parsePct(o.avance);
+    const tag = o.esRuta ? `<span class="obra-tag ruta">Ruta</span>` : `<span class="obra-tag activo">${Math.round(pct*100)}%</span>`;
+    return `<div class="obra-item" onclick="flyToObra('${esc(o.nombre).replace(/'/g,"\\'")}')">
+      <div class="obra-name">${esc(o.nombre)}</div>
+      <div class="obra-meta">${tag}</div>
+    </div>`;
+  }).join('');
+
+  // Equipos activos
+  const activos = allEquipos.filter(e => e.estado === 'Activo');
+  document.getElementById('equipos-count').textContent = activos.length;
+  document.getElementById('equipos-list').innerHTML = activos.map(e => `
+    <div class="equipo-item">
+      <div class="equipo-icon">${getIcono(e.tipo)}</div>
+      <div class="equipo-info">
+        <div class="equipo-name">${esc(e.legajo)}${e.propio === 'Alquilado' ? ' <span style="color:var(--orange);font-size:10px">(Alq.)</span>' : ''}</div>
+        <div class="equipo-obra">${esc(e.obra) || '—'}</div>
+      </div>
+      <span class="equipo-estado estado-activo">Activo</span>
+    </div>`).join('');
+
+  // En taller / sin tarea
+  const enTaller = allEquipos.filter(e => e.estado === 'Taller');
+  const sinTarea = allEquipos.filter(e => e.estado === 'Sin Tarea');
+  const inactivosHTML = [
+    ...enTaller.map(e => `<div class="equipo-item">
+      <div class="equipo-icon">${getIcono(e.tipo)}</div>
+      <div class="equipo-info"><div class="equipo-name">${esc(e.legajo)}</div><div class="equipo-obra">En taller — Central DVP</div></div>
+      <span class="equipo-estado estado-taller">Taller</span>
+    </div>`),
+    ...sinTarea.map(e => `<div class="equipo-item">
+      <div class="equipo-icon">${getIcono(e.tipo)}</div>
+      <div class="equipo-info"><div class="equipo-name">${esc(e.legajo)}</div><div class="equipo-obra">Sin tarea asignada</div></div>
+      <span class="equipo-estado estado-sintarea">Sin tarea</span>
+    </div>`)
+  ].join('');
+
+  // Cuadrillas
+  document.getElementById('cuadrillas-count').textContent = allCuadrillas.length;
+  document.getElementById('cuadrillas-list').innerHTML = allCuadrillas.map(c => `
+    <div class="equipo-item">
+      <div class="equipo-icon">👷</div>
+      <div class="equipo-info">
+        <div class="equipo-name">${esc(c.nombre)}</div>
+        <div class="equipo-obra">${esc(c.encargado)} — ${esc(c.obra) || 'Sin asignar'}</div>
+      </div>
+    </div>`).join('') + inactivosHTML;
+}
+
+window.flyToObra = function(nombre) {
+  const obra = allObras.find(o => o.nombre === nombre);
+  if (!obra || !obra.coords) return;
+  map.flyTo([obra.coords.lat, obra.coords.lng], 15, { duration: 1 });
+  setTimeout(() => {
+    if (obraMarkers[nombre]) obraMarkers[nombre].openPopup();
+  }, 1100);
+  document.querySelectorAll('.obra-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+};
+
+async function loadAll() {
+  const icon = document.getElementById('refresh-icon');
+  icon.classList.add('spinning');
+  try {
+    const [metroRows, rutasRows, equiposRows, cuadrillasRows] = await Promise.all([
+      fetchCSV(URLS.metro),
+      fetchCSV(URLS.rutas),
+      fetchCSV(URLS.equipos),
+      fetchCSV(URLS.cuadrillas)
+    ]);
+
+    // Parse obras metro — headers row 2, data from row 3
+    // Cols: 0=Fecha 1=Tarea 2=Desc 3=Act 4=Pedido 5=Contacto 6=Inicio 7=% 8=Avance 9=Fin 10=Coords
+    allObras = [];
+    metroRows.slice(2).forEach(r => {
+      if (!r[1] || !r[1].trim()) return;
+      const coords = parseCoords(r[10]);
+      allObras.push({
+        nombre: r[1].trim(),
+        avance: r[8] || r[7] || '0',
+        coords,
+        esRuta: false
+      });
+    });
+
+    // Parse obras rutas — skip section headers
+    rutasRows.forEach(r => {
+      const f = String(r[0]||'').trim();
+      if (!f || f.includes('RUTA PROVINCIAL') || f === 'TAREA' ||
+          f === 'TAREA PENDIENTE' || f.includes('OBRAS PENDIENTES') || f.includes('🛣')) return;
+      // Cols rutas: 0=Tarea 1=Desc 2=Inicio 3=% 4=Avance 5=Fin 6=Coords
+      const coords = parseCoords(r[6]);
+      allObras.push({
+        nombre: r[0].trim(),
+        avance: r[4] || r[3] || '0',
+        coords,
+        esRuta: true
+      });
+    });
+
+    // Parse equipos — headers row 3, data from row 5
+    allEquipos = [];
+    equiposRows.forEach((r, i) => {
+      if (i < 4) return; // skip headers
+      if (!r[0] || !r[0].trim()) return;
+      allEquipos.push({
+        legajo: r[0].trim(),
+        tipo:   r[1] ? r[1].trim() : '',
+        propio: r[2] ? r[2].trim() : 'DVP',
+        estado: r[3] ? r[3].trim() : '',
+        obra:   r[4] ? r[4].trim() : ''
+      });
+    });
+
+    // Parse cuadrillas — headers row 2, data from row 3
+    allCuadrillas = [];
+    cuadrillasRows.forEach((r, i) => {
+      if (i < 2) return;
+      if (!r[0] || !r[0].trim()) return;
+      allCuadrillas.push({
+        nombre:    r[0].trim(),
+        encargado: r[1] ? r[1].trim() : '',
+        obra:      r[2] ? r[2].trim() : ''
+      });
+    });
+
+    drawBase();
+    drawObras();
+    renderSidebar();
+
+  } catch(e) {
+    console.error(e);
+  } finally {
+    icon.classList.remove('spinning');
+    document.getElementById('loading').classList.add('hidden');
+  }
+}
+
+// Clock
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+loadAll();
+</script>
+</body>
+</html>
