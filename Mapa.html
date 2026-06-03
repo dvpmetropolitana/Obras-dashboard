@@ -172,14 +172,14 @@ html, body { height: 100%; background: #E8EDF2; color: var(--text); font-family:
           <div class="legend-item"><div class="legend-dot" style="background:#4EADFF"></div> Obra sin iniciar</div>
           <div class="legend-item"><div class="legend-dot" style="background:#9B6DFF"></div> Ruta provincial</div>
           <div class="legend-item"><div class="legend-dot" style="background:#F0A30A"></div> Central Vialidad (Base)</div>
-          <div class="legend-item"><span class="legend-icon">🟡</span> Motoniveladora</div>
-          <div class="legend-item"><span class="legend-icon">🔵</span> Camión</div>
-          <div class="legend-item"><span class="legend-icon">🟠</span> Retroexcavadora</div>
-          <div class="legend-item"><span class="legend-icon">🟤</span> Tractor</div>
-          <div class="legend-item"><span class="legend-icon">🟣</span> Minicargadora</div>
-          <div class="legend-item"><span class="legend-icon">⚫</span> Compactador</div>
-          <div class="legend-item"><span class="legend-icon">🔴</span> Cargadora Frontal</div>
-          <div class="legend-item"><span class="legend-icon">👷</span> Cuadrilla</div>
+          <div class="legend-item" id="leg-mn"></div>
+          <div class="legend-item" id="leg-cam"></div>
+          <div class="legend-item" id="leg-ret"></div>
+          <div class="legend-item" id="leg-trac"></div>
+          <div class="legend-item" id="leg-mini"></div>
+          <div class="legend-item" id="leg-comp"></div>
+          <div class="legend-item" id="leg-carg"></div>
+          <div class="legend-item" id="leg-cuad"></div>
         </div>
       </div>
 
@@ -223,7 +223,18 @@ const URLS = {
 
 const BASE = { lat: -27.432986, lng: -59.009670 };
 
-const ICONOS = {
+const SVG_ICONS = {
+  'Motoniveladora': `<svg width="36" height="36" viewBox="0 0 48 48"><rect x="4" y="28" width="40" height="10" rx="2" fill="#E8A800" stroke="#B07800" stroke-width="1.5"/><rect x="8" y="20" width="20" height="10" rx="1.5" fill="#F5C400" stroke="#B07800" stroke-width="1.5"/><rect x="28" y="24" width="12" height="6" rx="1" fill="#F5C400" stroke="#B07800" stroke-width="1"/><circle cx="10" cy="38" r="5" fill="#333" stroke="#555" stroke-width="1"/><circle cx="24" cy="38" r="5" fill="#333" stroke="#555" stroke-width="1"/><circle cx="38" cy="38" r="5" fill="#333" stroke="#555" stroke-width="1"/><line x1="6" y1="32" x2="42" y2="34" stroke="#666" stroke-width="2.5" stroke-linecap="round"/><rect x="10" y="16" width="10" height="8" rx="1" fill="#87CEEB" stroke="#B07800" stroke-width="1"/></svg>`,
+  'Camión': `<svg width="36" height="36" viewBox="0 0 48 48"><rect x="2" y="22" width="28" height="16" rx="2" fill="#4A90D9" stroke="#2266AA" stroke-width="1.5"/><rect x="30" y="26" width="16" height="12" rx="2" fill="#3A7AC9" stroke="#2266AA" stroke-width="1.5"/><rect x="31" y="27" width="9" height="6" rx="1" fill="#87CEEB" stroke="#2266AA" stroke-width="0.8"/><rect x="2" y="14" width="16" height="10" rx="1.5" fill="#3A7AC9" stroke="#2266AA" stroke-width="1.5"/><rect x="3" y="15" width="12" height="7" rx="1" fill="#87CEEB" stroke="#2266AA" stroke-width="0.8"/><circle cx="10" cy="38" r="5" fill="#222" stroke="#444" stroke-width="1"/><circle cx="26" cy="38" r="5" fill="#222" stroke="#444" stroke-width="1"/><circle cx="40" cy="38" r="5" fill="#222" stroke="#444" stroke-width="1"/></svg>`,
+  'Retroexcavadora': `<svg width="36" height="36" viewBox="0 0 48 48"><rect x="10" y="26" width="28" height="12" rx="2" fill="#E86A00" stroke="#A04000" stroke-width="1.5"/><rect x="14" y="18" width="14" height="10" rx="1.5" fill="#F08020" stroke="#A04000" stroke-width="1.5"/><rect x="15" y="19" width="10" height="7" rx="1" fill="#87CEEB" stroke="#A04000" stroke-width="0.8"/><line x1="36" y1="26" x2="44" y2="14" stroke="#A04000" stroke-width="3" stroke-linecap="round"/><line x1="44" y1="14" x2="46" y2="22" stroke="#A04000" stroke-width="2.5" stroke-linecap="round"/><path d="M44 22 L48 26 L44 28 Z" fill="#666"/><rect x="8" y="36" width="32" height="6" rx="3" fill="#333" stroke="#555" stroke-width="1"/><circle cx="12" cy="39" r="3" fill="#555"/><circle cx="36" cy="39" r="3" fill="#555"/></svg>`,
+  'Tractor': `<svg width="36" height="36" viewBox="0 0 48 48"><rect x="8" y="24" width="24" height="14" rx="2" fill="#5C8A3C" stroke="#3A5A20" stroke-width="1.5"/><rect x="10" y="16" width="14" height="10" rx="1.5" fill="#6AAA44" stroke="#3A5A20" stroke-width="1.5"/><rect x="11" y="17" width="10" height="7" rx="1" fill="#87CEEB" stroke="#3A5A20" stroke-width="0.8"/><circle cx="14" cy="38" r="7" fill="#222" stroke="#444" stroke-width="1.5"/><circle cx="14" cy="38" r="4" fill="#444"/><circle cx="34" cy="40" r="4" fill="#222" stroke="#444" stroke-width="1"/><circle cx="34" cy="40" r="2" fill="#444"/><rect x="20" y="10" width="3" height="8" rx="1" fill="#888" stroke="#666"/></svg>`,
+  'Minicargadora': `<svg width="36" height="36" viewBox="0 0 48 48"><rect x="10" y="24" width="22" height="14" rx="2" fill="#8B5CF6" stroke="#5B2DB0" stroke-width="1.5"/><rect x="12" y="18" width="14" height="8" rx="1.5" fill="#A07CF8" stroke="#5B2DB0" stroke-width="1.5"/><rect x="13" y="19" width="10" height="6" rx="1" fill="#87CEEB" stroke="#5B2DB0" stroke-width="0.8"/><line x1="10" y1="24" x2="4" y2="18" stroke="#5B2DB0" stroke-width="3" stroke-linecap="round"/><line x1="32" y1="24" x2="38" y2="18" stroke="#5B2DB0" stroke-width="3" stroke-linecap="round"/><rect x="2" y="14" width="8" height="5" rx="1" fill="#7A4AE0" stroke="#5B2DB0" stroke-width="1"/><rect x="32" y="14" width="8" height="5" rx="1" fill="#7A4AE0" stroke="#5B2DB0" stroke-width="1"/><rect x="8" y="36" width="26" height="6" rx="3" fill="#333" stroke="#555" stroke-width="1"/></svg>`,
+  'Compactador': `<svg width="36" height="36" viewBox="0 0 48 48"><rect x="6" y="24" width="36" height="12" rx="2" fill="#666" stroke="#333" stroke-width="1.5"/><rect x="10" y="16" width="16" height="10" rx="1.5" fill="#777" stroke="#333" stroke-width="1.5"/><rect x="11" y="17" width="12" height="7" rx="1" fill="#87CEEB" stroke="#333" stroke-width="0.8"/><ellipse cx="38" cy="35" rx="6" ry="8" fill="#444" stroke="#222" stroke-width="1.5"/><circle cx="12" cy="38" r="5" fill="#222" stroke="#444" stroke-width="1"/><circle cx="24" cy="38" r="5" fill="#222" stroke="#444" stroke-width="1"/></svg>`,
+  'Cargadora Frontal': `<svg width="36" height="36" viewBox="0 0 48 48"><rect x="12" y="22" width="24" height="16" rx="2" fill="#E83030" stroke="#A01010" stroke-width="1.5"/><rect x="14" y="14" width="14" height="10" rx="1.5" fill="#F05050" stroke="#A01010" stroke-width="1.5"/><rect x="15" y="15" width="10" height="7" rx="1" fill="#87CEEB" stroke="#A01010" stroke-width="0.8"/><line x1="12" y1="22" x2="4" y2="16" stroke="#A01010" stroke-width="3.5" stroke-linecap="round"/><line x1="36" y1="22" x2="44" y2="16" stroke="#A01010" stroke-width="3.5" stroke-linecap="round"/><path d="M2 12 L6 20 L42 20 L46 12 Z" fill="#CC2020" stroke="#A01010" stroke-width="1.5"/><circle cx="16" cy="38" r="6" fill="#222" stroke="#444" stroke-width="1.5"/><circle cx="16" cy="38" r="3" fill="#444"/><circle cx="32" cy="38" r="6" fill="#222" stroke="#444" stroke-width="1.5"/><circle cx="32" cy="38" r="3" fill="#444"/></svg>`,
+  'Cuadrilla': `<svg width="36" height="36" viewBox="0 0 48 48"><ellipse cx="24" cy="14" rx="12" ry="8" fill="#F5C400" stroke="#B07800" stroke-width="1.5"/><rect x="12" y="18" width="24" height="4" rx="1" fill="#E8A800" stroke="#B07800" stroke-width="1"/><rect x="16" y="24" width="16" height="14" rx="2" fill="#FF8C00" stroke="#CC6600" stroke-width="1.5"/><rect x="8" y="24" width="8" height="4" rx="2" fill="#FF8C00" stroke="#CC6600" stroke-width="1"/><rect x="32" y="24" width="8" height="4" rx="2" fill="#FF8C00" stroke="#CC6600" stroke-width="1"/><rect x="17" y="36" width="6" height="8" rx="1" fill="#4A4A8A" stroke="#333366" stroke-width="1"/><rect x="25" y="36" width="6" height="8" rx="1" fill="#4A4A8A" stroke="#333366" stroke-width="1"/></svg>`,
+};
+
+const ICONOS_EMOJI = {
   'Motoniveladora':    '🟡',
   'Camión':           '🔵',
   'Retroexcavadora':  '🟠',
@@ -235,7 +246,8 @@ const ICONOS = {
 
 let mostrarSinIniciar = true;
 
-function getIcono(tipo) { return ICONOS[tipo] || '⚙️'; }
+function getIcono(tipo) { return ICONOS_EMOJI[tipo] || '⚙️'; }
+function getSVGIcono(tipo) { return SVG_ICONS[tipo] || SVG_ICONS['Cuadrilla']; }
 
 function parseCSV(text) {
   const lines = text.trim().split('\n');
@@ -378,19 +390,19 @@ function drawObras() {
       .addTo(obraLayer);
     obraMarkers[obra.nombre] = marker;
 
-    // Íconos de equipos alrededor — solo si hay actividad
+    // Íconos SVG de equipos alrededor — solo si hay actividad
     if (pct > 0) {
       const todos = [
-        ...equiposAsig.map(e => ({ emoji: getIcono(e.tipo), label: e.legajo })),
-        ...cuadrillasAsig.map(c => ({ emoji: '👷', label: c.nombre }))
+        ...equiposAsig.map(e => ({ svg: getSVGIcono(e.tipo), label: e.legajo })),
+        ...cuadrillasAsig.map(c => ({ svg: getSVGIcono('Cuadrilla'), label: c.nombre }))
       ];
       todos.forEach((item, idx) => {
         if (idx >= OFFSETS.length) return;
         const [dlat, dlng] = OFFSETS[idx];
         const eIcon = L.divIcon({
           className: '',
-          html: `<div title="${esc(item.label)}" style="font-size:16px;cursor:default;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4))">${item.emoji}</div>`,
-          iconAnchor: [10, 10]
+          html: `<div title="${esc(item.label)}" style="cursor:default;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));background:white;border-radius:6px;padding:3px;border:1.5px solid rgba(0,0,0,0.15)">${item.svg}</div>`,
+          iconAnchor: [21, 21]
         });
         L.marker([obra.coords.lat + dlat, obra.coords.lng + dlng], { icon: eIcon, interactive: false })
           .addTo(equipLayer);
@@ -405,10 +417,12 @@ function renderTaller() {
   const sinTarea = allEquipos.filter(e => e.estado === 'Sin Tarea');
   let html = '';
   enTaller.forEach(e => {
-    html += `<div class="taller-item"><span class="taller-ico">${getIcono(e.tipo)}</span>${esc(e.legajo)} <span style="font-size:10px;color:var(--red);margin-left:auto">Taller</span></div>`;
+    const smallSvg = (getSVGIcono(e.tipo)||'').replace('width="36"','width="20"').replace('height="36"','height="20"');
+    html += `<div class="taller-item"><span class="taller-ico">${smallSvg}</span>${esc(e.legajo)} <span style="font-size:10px;color:var(--red);margin-left:auto">Taller</span></div>`;
   });
   sinTarea.forEach(e => {
-    html += `<div class="taller-item"><span class="taller-ico">${getIcono(e.tipo)}</span>${esc(e.legajo)} <span style="font-size:10px;color:var(--yellow);margin-left:auto">Sin tarea</span></div>`;
+    const smallSvg = (getSVGIcono(e.tipo)||'').replace('width="36"','width="20"').replace('height="36"','height="20"');
+    html += `<div class="taller-item"><span class="taller-ico">${smallSvg}</span>${esc(e.legajo)} <span style="font-size:10px;color:var(--yellow);margin-left:auto">Sin tarea</span></div>`;
   });
   document.getElementById('taller-list').innerHTML = html || '<div style="font-size:11px;color:var(--muted)">Sin equipos en taller</div>';
 }
@@ -532,6 +546,27 @@ updateClock();
 setInterval(updateClock, 1000);
 
 loadAll();
+
+// Fill legend with SVG icons
+document.addEventListener('DOMContentLoaded', () => {});
+const legItems = [
+  ['leg-mn',   'Motoniveladora',    'Motoniveladora'],
+  ['leg-cam',  'Camión',            'Camión'],
+  ['leg-ret',  'Retroexcavadora',   'Retroexcavadora'],
+  ['leg-trac', 'Tractor',           'Tractor'],
+  ['leg-mini', 'Minicargadora',     'Minicargadora'],
+  ['leg-comp', 'Compactador',       'Compactador'],
+  ['leg-carg', 'Cargadora Frontal', 'Cargadora Frontal'],
+  ['leg-cuad', 'Cuadrilla',         'Cuadrilla'],
+];
+legItems.forEach(([id, tipo, label]) => {
+  const el = document.getElementById(id);
+  if (el) {
+    const svg = SVG_ICONS[tipo] || '';
+    const small = svg.replace('width="36"','width="22"').replace('height="36"','height="22"');
+    el.innerHTML = `<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:white;border-radius:5px;border:1px solid #ccc;flex-shrink:0">${small}</span> ${label}`;
+  }
+});
 </script>
 </body>
 </html>
