@@ -28,24 +28,17 @@
   --purple:  #9B6DFF;
 }
 html, body { height: 100%; background: #E8EDF2; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; overflow: hidden; }
-
 .layout { display: grid; grid-template-rows: 56px 1fr; height: 100vh; }
 
 /* Header */
-.header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 20px;
-  background: var(--surface);
-  border-bottom: 0.5px solid var(--border2);
-  z-index: 1000;
-}
+.header { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: var(--surface); border-bottom: 0.5px solid var(--border2); z-index: 1000; }
 .brand { display: flex; align-items: center; gap: 10px; }
 .brand-icon { font-size: 20px; }
 .brand-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
 .brand-sub { font-size: 11px; color: var(--muted); margin-left: 8px; }
 .header-right { display: flex; align-items: center; gap: 10px; }
 .clock { font-family: 'DM Mono', monospace; font-size: 16px; color: var(--accent); }
-.refresh-btn {
+.btn {
   display: flex; align-items: center; gap: 6px;
   padding: 6px 12px; border-radius: 7px;
   border: 0.5px solid var(--border2);
@@ -53,121 +46,98 @@ html, body { height: 100%; background: #E8EDF2; color: var(--text); font-family:
   font-family: 'DM Sans', sans-serif; font-size: 12px;
   cursor: pointer; transition: all 0.15s;
 }
-.refresh-btn:hover { background: var(--blue); color: var(--text); }
-.refresh-btn svg { width: 13px; height: 13px; }
+.btn:hover { background: var(--blue); color: var(--text); }
+.btn.active { background: var(--blue); color: var(--text); border-color: var(--blue-lt); }
+.btn svg { width: 13px; height: 13px; }
 
 /* Main */
-.main { display: grid; grid-template-columns: 320px 1fr; height: 100%; overflow: hidden; }
+.main { display: grid; grid-template-columns: 300px 1fr; height: 100%; overflow: hidden; }
 
 /* Sidebar */
-.sidebar {
-  background: var(--surface);
-  border-right: 0.5px solid var(--border2);
-  overflow-y: auto;
-  display: flex; flex-direction: column;
-}
+.sidebar { background: var(--surface); border-right: 0.5px solid var(--border2); overflow-y: auto; display: flex; flex-direction: column; }
 .sidebar::-webkit-scrollbar { width: 4px; }
-.sidebar::-webkit-scrollbar-track { background: transparent; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
-
 .sidebar-section { border-bottom: 0.5px solid var(--border); }
-.sidebar-title {
-  padding: 12px 16px 8px;
-  font-size: 10px; font-weight: 600; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 1px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.sidebar-count {
-  background: var(--surface2); border: 0.5px solid var(--border);
-  border-radius: 99px; padding: 1px 7px; font-size: 10px; color: var(--muted);
-}
+.sidebar-title { padding: 12px 16px 8px; font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: space-between; }
+.sidebar-count { background: var(--surface2); border: 0.5px solid var(--border); border-radius: 99px; padding: 1px 7px; font-size: 10px; color: var(--muted); }
+
+/* Filter toggle */
+.filter-bar { padding: 8px 16px 10px; display: flex; gap: 6px; }
+.filter-btn { font-size: 11px; padding: 3px 10px; border-radius: 99px; border: 0.5px solid var(--border2); background: var(--surface2); color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.filter-btn.on { background: var(--green); color: #fff; border-color: var(--green); }
+.filter-btn.off { background: var(--surface2); color: var(--muted); }
 
 /* Legend */
-.legend { padding: 10px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
-.legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.legend { padding: 8px 16px 12px; display: flex; flex-direction: column; gap: 5px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-icon { font-size: 13px; }
 
 /* Obra items */
-.obra-item {
-  padding: 10px 16px;
-  border-bottom: 0.5px solid var(--border);
-  cursor: pointer;
-  transition: background 0.1s;
-}
+.obra-item { padding: 9px 16px; border-bottom: 0.5px solid var(--border); cursor: pointer; transition: background 0.1s; }
 .obra-item:hover { background: var(--surface2); }
 .obra-item.active { background: rgba(78,173,255,0.08); border-left: 2px solid var(--accent); }
-.obra-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
-.obra-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.obra-tag {
-  font-size: 10px; padding: 1px 6px; border-radius: 99px;
-  background: var(--surface2); color: var(--muted);
-  border: 0.5px solid var(--border);
-}
+.obra-item.siniciciar { opacity: 0.5; }
+.obra-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 3px; line-height: 1.3; }
+.obra-meta { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.obra-tag { font-size: 10px; padding: 1px 6px; border-radius: 99px; background: var(--surface2); color: var(--muted); border: 0.5px solid var(--border); }
 .obra-tag.activo { background: rgba(29,184,122,0.12); color: var(--green); border-color: rgba(29,184,122,0.3); }
 .obra-tag.ruta { background: rgba(155,109,255,0.12); color: var(--purple); border-color: rgba(155,109,255,0.3); }
+.obra-tag.sin { background: rgba(78,173,255,0.1); color: var(--accent); border-color: rgba(78,173,255,0.2); }
 
 /* Equipo items */
-.equipo-item {
-  padding: 8px 16px;
-  border-bottom: 0.5px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-  cursor: pointer; transition: background 0.1s;
-}
-.equipo-item:hover { background: var(--surface2); }
-.equipo-icon { font-size: 18px; width: 28px; text-align: center; flex-shrink: 0; }
+.equipo-item { padding: 7px 16px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.equipo-icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; }
 .equipo-info { flex: 1; min-width: 0; }
 .equipo-name { font-size: 12px; font-weight: 500; color: var(--text); }
 .equipo-obra { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.equipo-estado {
-  font-size: 10px; padding: 2px 7px; border-radius: 99px; flex-shrink: 0;
-  font-weight: 500;
-}
-.estado-activo  { background: rgba(29,184,122,0.15);  color: var(--green); }
-.estado-taller  { background: rgba(226,75,74,0.15);   color: var(--red); }
-.estado-sintarea{ background: rgba(240,163,10,0.15);  color: var(--yellow); }
+.equipo-estado { font-size: 10px; padding: 2px 7px; border-radius: 99px; flex-shrink: 0; font-weight: 500; }
+.estado-activo   { background: rgba(29,184,122,0.15);  color: var(--green); }
+.estado-taller   { background: rgba(226,75,74,0.15);   color: var(--red); }
+.estado-sintarea { background: rgba(240,163,10,0.15);  color: var(--yellow); }
 
 /* Map */
 #map { width: 100%; height: 100%; }
-.leaflet-container { background: #0A1929 !important; }
+
+/* Taller panel on map */
+.taller-panel {
+  position: absolute; bottom: 20px; right: 20px; z-index: 900;
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  border-radius: 10px; padding: 10px 14px;
+  min-width: 200px; max-width: 240px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.taller-title { font-size: 11px; font-weight: 600; color: var(--red); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.taller-item { display: flex; align-items: center; gap: 8px; padding: 3px 0; font-size: 12px; color: var(--muted); border-bottom: 0.5px solid var(--border); }
+.taller-item:last-child { border-bottom: none; }
+.taller-ico { font-size: 14px; }
 
 /* Popup */
-.custom-popup { min-width: 220px; }
-.popup-title { font-size: 13px; font-weight: 600; color: #0D2137; margin-bottom: 8px; line-height: 1.3; }
-.popup-section { font-size: 11px; font-weight: 600; color: #3C5A78; text-transform: uppercase; letter-spacing: 0.5px; margin: 8px 0 4px; }
-.popup-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1B3A5C; margin-bottom: 3px; }
-.popup-empty { font-size: 12px; color: #7A9AB8; font-style: italic; }
-.popup-avance { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.custom-popup { min-width: 200px; }
+.popup-title { font-size: 13px; font-weight: 600; color: #0D2137; margin-bottom: 6px; line-height: 1.3; }
+.popup-section { font-size: 10px; font-weight: 600; color: #3C5A78; text-transform: uppercase; letter-spacing: 0.5px; margin: 7px 0 3px; }
+.popup-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1B3A5C; margin-bottom: 2px; }
+.popup-empty { font-size: 11px; color: #7A9AB8; font-style: italic; }
+.popup-avance { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
 .popup-bar-track { flex: 1; height: 5px; background: #E8EDF2; border-radius: 99px; overflow: hidden; }
 .popup-bar-fill { height: 100%; border-radius: 99px; }
-.popup-pct { font-size: 11px; font-weight: 600; color: #1B3A5C; min-width: 30px; }
+.popup-pct { font-size: 11px; font-weight: 600; color: #1B3A5C; min-width: 28px; }
 
-/* Base marker */
-.base-marker { background: var(--surface2); border: 2px solid var(--accent); border-radius: 8px; padding: 4px 6px; font-size: 11px; color: var(--accent); font-weight: 600; white-space: nowrap; }
-
-.loading-overlay {
-  position: fixed; inset: 0; background: #E8EDF2;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 9999; flex-direction: column; gap: 12px;
-  transition: opacity 0.3s;
-}
+/* Loading */
+.loading-overlay { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 12px; transition: opacity 0.3s; }
 .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-.loading-spinner {
-  width: 32px; height: 32px; border: 2px solid var(--border2);
-  border-top-color: var(--accent); border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
+.loading-spinner { width: 32px; height: 32px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 .loading-text { font-size: 13px; color: var(--muted); }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-@keyframes spin2 { to { transform: rotate(360deg); } }
-.spinning { animation: spin2 0.6s linear infinite; }
+.spinning { animation: spin 0.6s linear infinite; }
 </style>
 </head>
 <body>
 
 <div class="loading-overlay" id="loading">
   <div class="loading-spinner"></div>
-  <div class="loading-text">Cargando datos...</div>
+  <div class="loading-text">Cargando mapa...</div>
 </div>
 
 <div class="layout">
@@ -179,7 +149,10 @@ html, body { height: 100%; background: #E8EDF2; color: var(--text); font-family:
     </div>
     <div class="header-right">
       <div class="clock" id="clock">--:--</div>
-      <button class="refresh-btn" onclick="loadAll()">
+      <button class="btn" id="toggle-sin" onclick="toggleSinIniciar()" title="Mostrar/ocultar obras sin iniciar">
+        👁 Sin iniciar
+      </button>
+      <button class="btn" onclick="loadAll()">
         <svg id="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M23 4v6h-6M1 20v-6h6"/>
           <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
@@ -195,10 +168,18 @@ html, body { height: 100%; background: #E8EDF2; color: var(--text); font-family:
       <div class="sidebar-section">
         <div class="sidebar-title">Leyenda</div>
         <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#1DB87A"></div> Obra activa / en curso</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#1DB87A"></div> Obra en curso</div>
           <div class="legend-item"><div class="legend-dot" style="background:#4EADFF"></div> Obra sin iniciar</div>
           <div class="legend-item"><div class="legend-dot" style="background:#9B6DFF"></div> Ruta provincial</div>
           <div class="legend-item"><div class="legend-dot" style="background:#F0A30A"></div> Central Vialidad (Base)</div>
+          <div class="legend-item"><span class="legend-icon">🟡</span> Motoniveladora</div>
+          <div class="legend-item"><span class="legend-icon">🔵</span> Camión</div>
+          <div class="legend-item"><span class="legend-icon">🟠</span> Retroexcavadora</div>
+          <div class="legend-item"><span class="legend-icon">🟤</span> Tractor</div>
+          <div class="legend-item"><span class="legend-icon">🟣</span> Minicargadora</div>
+          <div class="legend-item"><span class="legend-icon">⚫</span> Compactador</div>
+          <div class="legend-item"><span class="legend-icon">🔴</span> Cargadora Frontal</div>
+          <div class="legend-item"><span class="legend-icon">👷</span> Cuadrilla</div>
         </div>
       </div>
 
@@ -221,7 +202,14 @@ html, body { height: 100%; background: #E8EDF2; color: var(--text); font-family:
       </div>
     </div>
 
-    <div id="map"></div>
+    <div style="position:relative;flex:1">
+      <div id="map"></div>
+      <!-- Taller panel -->
+      <div class="taller-panel" id="taller-panel">
+        <div class="taller-title">🔧 En taller — Central DVP</div>
+        <div id="taller-list"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -233,10 +221,8 @@ const URLS = {
   cuadrillas: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-Cy1gHNylNZFz4Lz8u9ZwfNsJW8BwLngea4UwVmlvjYplYuWUyjX2HDYJ094O6g/pub?gid=514753246&single=true&output=csv'
 };
 
-// Vialidad Provincial base
-const BASE = { lat: -27.432986, lng: -59.009670, name: 'Central Vialidad Provincial' };
+const BASE = { lat: -27.432986, lng: -59.009670 };
 
-// Íconos por tipo de equipo
 const ICONOS = {
   'Motoniveladora':    '🟡',
   'Camión':           '🔵',
@@ -246,9 +232,10 @@ const ICONOS = {
   'Compactador':      '⚫',
   'Cargadora Frontal':'🔴',
 };
-const ICONO_DEFAULT = '⚙️';
 
-function getIcono(tipo) { return ICONOS[tipo] || ICONO_DEFAULT; }
+let mostrarSinIniciar = true;
+
+function getIcono(tipo) { return ICONOS[tipo] || '⚙️'; }
 
 function parseCSV(text) {
   const lines = text.trim().split('\n');
@@ -273,6 +260,7 @@ async function fetchCSV(url) {
 function parseCoords(val) {
   if (!val) return null;
   const s = String(val).trim();
+  if (!s || s === '-') return null;
   const m = s.match(/(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)/);
   if (!m) return null;
   return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
@@ -300,114 +288,149 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── Leaflet map ──────────────────────────────────────────────────────────────
-const map = L.map('map', {
-  center: [-27.45, -58.98],
-  zoom: 12,
-  zoomControl: true,
-}).setView([-27.45, -58.98], 12);
+// ── Leaflet ──────────────────────────────────────────────────────────────────
+const map = L.map('map', { center: [-27.45, -58.98], zoom: 12, zoomControl: true });
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '© OpenStreetMap © CARTO',
   subdomains: 'abcd', maxZoom: 19
 }).addTo(map);
 
-// Marker layers
-const obraLayer    = L.layerGroup().addTo(map);
-const equipoLayer  = L.layerGroup().addTo(map);
-const baseLayer    = L.layerGroup().addTo(map);
+const obraLayer   = L.layerGroup().addTo(map);
+const equipLayer  = L.layerGroup().addTo(map);
+const baseLayer   = L.layerGroup().addTo(map);
 
-let allObras = [];
-let allEquipos = [];
-let allCuadrillas = [];
+let allObras = [], allEquipos = [], allCuadrillas = [];
 let obraMarkers = {};
 
-// Base marker — Vialidad Provincial
+// ── Base DVP ──────────────────────────────────────────────────────────────────
 function drawBase() {
   baseLayer.clearLayers();
   const icon = L.divIcon({
     className: '',
     html: `<div style="background:#152F4A;border:2px solid #F0A30A;border-radius:10px;padding:5px 9px;font-size:11px;color:#F0A30A;font-weight:600;font-family:'DM Sans',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.4)">🏛 Central DVP</div>`,
-    iconAnchor: [60, 20]
+    iconAnchor: [55, 18]
   });
   L.marker([BASE.lat, BASE.lng], { icon })
-    .bindPopup(`<div class="custom-popup">
-      <div class="popup-title">🏛 Central Vialidad Provincial</div>
-      <div class="popup-item">📍 Base de operaciones y taller</div>
-    </div>`)
+    .bindPopup(`<div class="custom-popup"><div class="popup-title">🏛 Central Vialidad Provincial</div><div class="popup-item">📍 Base de operaciones y taller</div></div>`)
     .addTo(baseLayer);
 }
 
-function makeObraMarker(obra) {
-  const pct = parsePct(obra.avance);
-  const color = obra.esRuta ? '#9B6DFF' : (pct > 0 ? '#1DB87A' : '#4EADFF');
-  const size = 14;
-
-  const equiposAsignados = allEquipos.filter(e =>
-    e.estado === 'Activo' && e.obra && obra.nombre &&
-    e.obra.trim().toLowerCase() === obra.nombre.trim().toLowerCase()
-  );
-  const cuadrillasAsignadas = allCuadrillas.filter(c =>
-    c.obra && obra.nombre &&
-    c.obra.trim().toLowerCase() === obra.nombre.trim().toLowerCase()
-  );
-
-  const equiposHTML = equiposAsignados.length
-    ? equiposAsignados.map(e => `<div class="popup-item">${getIcono(e.tipo)} ${esc(e.legajo)} — ${esc(e.tipo)}${e.propio === 'Alquilado' ? ' <span style="color:#E8701A;font-size:10px">(Alq.)</span>' : ''}</div>`).join('')
-    : `<div class="popup-empty">Sin equipos asignados</div>`;
-
-  const cuadrillasHTML = cuadrillasAsignadas.length
-    ? cuadrillasAsignadas.map(c => `<div class="popup-item">👷 ${esc(c.nombre)} — ${esc(c.encargado)}</div>`).join('')
-    : `<div class="popup-empty">Sin cuadrilla asignada</div>`;
-
-  const pctPct = Math.round(pct * 100);
-  const popupContent = `<div class="custom-popup">
-    <div class="popup-title">${esc(obra.nombre)}</div>
-    <div class="popup-avance">
-      <div class="popup-bar-track"><div class="popup-bar-fill" style="width:${pctPct}%;background:${barColor(pct)}"></div></div>
-      <span class="popup-pct">${pctPct}%</span>
-    </div>
-    <div class="popup-section">Equipos</div>
-    ${equiposHTML}
-    <div class="popup-section">Cuadrillas</div>
-    ${cuadrillasHTML}
-  </div>`;
-
-  const icon = L.divIcon({
-    className: '',
-    html: `<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;border:2px solid rgba(255,255,255,0.3);box-shadow:0 0 8px ${color}88;cursor:pointer"></div>`,
-    iconAnchor: [size/2, size/2]
-  });
-
-  return L.marker([obra.coords.lat, obra.coords.lng], { icon })
-    .bindPopup(popupContent, { maxWidth: 280 });
-}
+// ── Obras markers ─────────────────────────────────────────────────────────────
+// Offset positions around the obra center for equipment icons
+const OFFSETS = [
+  [0.0003, 0.0006], [-0.0003, 0.0006], [0.0006, 0], [-0.0006, 0],
+  [0.0003, -0.0006], [-0.0003, -0.0006], [0.0006, 0.0004], [-0.0006, 0.0004],
+  [0, 0.0007], [0, -0.0007]
+];
 
 function drawObras() {
   obraLayer.clearLayers();
+  equipLayer.clearLayers();
   obraMarkers = {};
-  const conCoords = allObras.filter(o => o.coords);
-  conCoords.forEach(obra => {
-    const m = makeObraMarker(obra);
-    m.addTo(obraLayer);
-    obraMarkers[obra.nombre] = m;
+
+  allObras.forEach(obra => {
+    if (!obra.coords) return;
+    const pct = parsePct(obra.avance);
+    const sinIniciar = pct === 0;
+    if (sinIniciar && !mostrarSinIniciar) return;
+
+    const color = obra.esRuta ? '#9B6DFF' : (pct > 0 ? '#1DB87A' : '#4EADFF');
+    const size = pct > 0 ? 16 : 12;
+    const opacity = sinIniciar ? '0.5' : '1';
+
+    // Equipos y cuadrillas asignadas
+    const equiposAsig = allEquipos.filter(e =>
+      e.estado === 'Activo' && e.obra &&
+      e.obra.trim().toLowerCase() === obra.nombre.trim().toLowerCase()
+    );
+    const cuadrillasAsig = allCuadrillas.filter(c =>
+      c.obra && c.obra.trim().toLowerCase() === obra.nombre.trim().toLowerCase()
+    );
+
+    // Popup
+    const equiposHTML = equiposAsig.length
+      ? equiposAsig.map(e => `<div class="popup-item">${getIcono(e.tipo)} ${esc(e.legajo)} — ${esc(e.tipo)}${e.propio === 'Alquilado' ? ' <span style="color:#E8701A;font-size:10px">(Alq.)</span>' : ''}</div>`).join('')
+      : `<div class="popup-empty">Sin equipos asignados</div>`;
+    const cuadrillasHTML = cuadrillasAsig.length
+      ? cuadrillasAsig.map(c => `<div class="popup-item">👷 ${esc(c.nombre)} — ${esc(c.encargado)}</div>`).join('')
+      : `<div class="popup-empty">Sin cuadrilla asignada</div>`;
+    const pctPct = Math.round(pct * 100);
+
+    const popup = `<div class="custom-popup">
+      <div class="popup-title">${esc(obra.nombre)}</div>
+      <div class="popup-avance">
+        <div class="popup-bar-track"><div class="popup-bar-fill" style="width:${pctPct}%;background:${barColor(pct)}"></div></div>
+        <span class="popup-pct">${pctPct}%</span>
+      </div>
+      <div class="popup-section">Equipos</div>${equiposHTML}
+      <div class="popup-section">Cuadrillas</div>${cuadrillasHTML}
+    </div>`;
+
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;border:2px solid rgba(255,255,255,0.5);box-shadow:0 0 10px ${color}88;cursor:pointer;opacity:${opacity}"></div>`,
+      iconAnchor: [size/2, size/2]
+    });
+
+    const marker = L.marker([obra.coords.lat, obra.coords.lng], { icon })
+      .bindPopup(popup, { maxWidth: 280 })
+      .addTo(obraLayer);
+    obraMarkers[obra.nombre] = marker;
+
+    // Íconos de equipos alrededor — solo si hay actividad
+    if (pct > 0) {
+      const todos = [
+        ...equiposAsig.map(e => ({ emoji: getIcono(e.tipo), label: e.legajo })),
+        ...cuadrillasAsig.map(c => ({ emoji: '👷', label: c.nombre }))
+      ];
+      todos.forEach((item, idx) => {
+        if (idx >= OFFSETS.length) return;
+        const [dlat, dlng] = OFFSETS[idx];
+        const eIcon = L.divIcon({
+          className: '',
+          html: `<div title="${esc(item.label)}" style="font-size:16px;cursor:default;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4))">${item.emoji}</div>`,
+          iconAnchor: [10, 10]
+        });
+        L.marker([obra.coords.lat + dlat, obra.coords.lng + dlng], { icon: eIcon, interactive: false })
+          .addTo(equipLayer);
+      });
+    }
   });
 }
 
+// ── Taller panel ─────────────────────────────────────────────────────────────
+function renderTaller() {
+  const enTaller = allEquipos.filter(e => e.estado === 'Taller');
+  const sinTarea = allEquipos.filter(e => e.estado === 'Sin Tarea');
+  let html = '';
+  enTaller.forEach(e => {
+    html += `<div class="taller-item"><span class="taller-ico">${getIcono(e.tipo)}</span>${esc(e.legajo)} <span style="font-size:10px;color:var(--red);margin-left:auto">Taller</span></div>`;
+  });
+  sinTarea.forEach(e => {
+    html += `<div class="taller-item"><span class="taller-ico">${getIcono(e.tipo)}</span>${esc(e.legajo)} <span style="font-size:10px;color:var(--yellow);margin-left:auto">Sin tarea</span></div>`;
+  });
+  document.getElementById('taller-list').innerHTML = html || '<div style="font-size:11px;color:var(--muted)">Sin equipos en taller</div>';
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────────────
 function renderSidebar() {
-  // Obras
   const conCoords = allObras.filter(o => o.coords);
   document.getElementById('obras-count').textContent = conCoords.length;
   document.getElementById('obras-list').innerHTML = conCoords.map(o => {
     const pct = parsePct(o.avance);
-    const tag = o.esRuta ? `<span class="obra-tag ruta">Ruta</span>` : `<span class="obra-tag activo">${Math.round(pct*100)}%</span>`;
-    return `<div class="obra-item" onclick="flyToObra('${esc(o.nombre).replace(/'/g,"\\'")}')">
+    const sinIniciar = pct === 0;
+    const tag = o.esRuta
+      ? `<span class="obra-tag ruta">Ruta</span>`
+      : sinIniciar
+        ? `<span class="obra-tag sin">Sin iniciar</span>`
+        : `<span class="obra-tag activo">${Math.round(pct*100)}%</span>`;
+    return `<div class="obra-item${sinIniciar ? ' siniciciar' : ''}" onclick="flyToObra(this,'${esc(o.nombre).replace(/'/g,"\\'")}')">
       <div class="obra-name">${esc(o.nombre)}</div>
       <div class="obra-meta">${tag}</div>
     </div>`;
   }).join('');
 
-  // Equipos activos
   const activos = allEquipos.filter(e => e.estado === 'Activo');
   document.getElementById('equipos-count').textContent = activos.length;
   document.getElementById('equipos-list').innerHTML = activos.map(e => `
@@ -420,23 +443,6 @@ function renderSidebar() {
       <span class="equipo-estado estado-activo">Activo</span>
     </div>`).join('');
 
-  // En taller / sin tarea
-  const enTaller = allEquipos.filter(e => e.estado === 'Taller');
-  const sinTarea = allEquipos.filter(e => e.estado === 'Sin Tarea');
-  const inactivosHTML = [
-    ...enTaller.map(e => `<div class="equipo-item">
-      <div class="equipo-icon">${getIcono(e.tipo)}</div>
-      <div class="equipo-info"><div class="equipo-name">${esc(e.legajo)}</div><div class="equipo-obra">En taller — Central DVP</div></div>
-      <span class="equipo-estado estado-taller">Taller</span>
-    </div>`),
-    ...sinTarea.map(e => `<div class="equipo-item">
-      <div class="equipo-icon">${getIcono(e.tipo)}</div>
-      <div class="equipo-info"><div class="equipo-name">${esc(e.legajo)}</div><div class="equipo-obra">Sin tarea asignada</div></div>
-      <span class="equipo-estado estado-sintarea">Sin tarea</span>
-    </div>`)
-  ].join('');
-
-  // Cuadrillas
   document.getElementById('cuadrillas-count').textContent = allCuadrillas.length;
   document.getElementById('cuadrillas-list').innerHTML = allCuadrillas.map(c => `
     <div class="equipo-item">
@@ -445,88 +451,67 @@ function renderSidebar() {
         <div class="equipo-name">${esc(c.nombre)}</div>
         <div class="equipo-obra">${esc(c.encargado)} — ${esc(c.obra) || 'Sin asignar'}</div>
       </div>
-    </div>`).join('') + inactivosHTML;
+    </div>`).join('');
 }
 
-window.flyToObra = function(nombre) {
-  const obra = allObras.find(o => o.nombre === nombre);
-  if (!obra || !obra.coords) return;
-  map.flyTo([obra.coords.lat, obra.coords.lng], 15, { duration: 1 });
-  setTimeout(() => {
-    if (obraMarkers[nombre]) obraMarkers[nombre].openPopup();
-  }, 1100);
-  document.querySelectorAll('.obra-item').forEach(el => el.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+// ── Controls ──────────────────────────────────────────────────────────────────
+window.toggleSinIniciar = function() {
+  mostrarSinIniciar = !mostrarSinIniciar;
+  const btn = document.getElementById('toggle-sin');
+  btn.classList.toggle('active', mostrarSinIniciar);
+  drawObras();
 };
 
+window.flyToObra = function(el, nombre) {
+  const obra = allObras.find(o => o.nombre === nombre);
+  if (!obra || !obra.coords) return;
+  map.flyTo([obra.coords.lat, obra.coords.lng], 16, { duration: 1 });
+  setTimeout(() => { if (obraMarkers[nombre]) obraMarkers[nombre].openPopup(); }, 1100);
+  document.querySelectorAll('.obra-item').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+};
+
+// ── Load data ─────────────────────────────────────────────────────────────────
 async function loadAll() {
   const icon = document.getElementById('refresh-icon');
   icon.classList.add('spinning');
   try {
     const [metroRows, rutasRows, equiposRows, cuadrillasRows] = await Promise.all([
-      fetchCSV(URLS.metro),
-      fetchCSV(URLS.rutas),
-      fetchCSV(URLS.equipos),
-      fetchCSV(URLS.cuadrillas)
+      fetchCSV(URLS.metro), fetchCSV(URLS.rutas),
+      fetchCSV(URLS.equipos), fetchCSV(URLS.cuadrillas)
     ]);
 
-    // Parse obras metro — headers row 2, data from row 3
-    // Cols: 0=Fecha 1=Tarea 2=Desc 3=Act 4=Pedido 5=Contacto 6=Inicio 7=% 8=Avance 9=Fin 11=Coords
+    // Metro: col 11 = UBICACIÓN
     allObras = [];
     metroRows.slice(2).forEach(r => {
       if (!r[1] || !r[1].trim()) return;
-      const coords = parseCoords(r[11]);
-      allObras.push({
-        nombre: r[1].trim(),
-        avance: r[8] || r[7] || '0',
-        coords,
-        esRuta: false
-      });
+      allObras.push({ nombre: r[1].trim(), avance: r[8] || r[7] || '0', coords: parseCoords(r[11]), esRuta: false });
     });
 
-    // Parse obras rutas — skip section headers
+    // Rutas: col 7 = UBICACIÓN
     rutasRows.forEach(r => {
       const f = String(r[0]||'').trim();
-      if (!f || f.includes('RUTA PROVINCIAL') || f === 'TAREA' ||
-          f === 'TAREA PENDIENTE' || f.includes('OBRAS PENDIENTES') || f.includes('🛣')) return;
-      // Cols rutas: 0=Tarea 1=Desc 2=Inicio 3=% 4=Avance 5=Fin 7=Coords
-      const coords = parseCoords(r[7]);
-      allObras.push({
-        nombre: r[0].trim(),
-        avance: r[4] || r[3] || '0',
-        coords,
-        esRuta: true
-      });
+      if (!f || f.includes('RUTA PROVINCIAL') || f === 'TAREA' || f === 'TAREA PENDIENTE' || f.includes('OBRAS PENDIENTES') || f.includes('🛣')) return;
+      allObras.push({ nombre: r[0].trim(), avance: r[4] || r[3] || '0', coords: parseCoords(r[7]), esRuta: true });
     });
 
-    // Parse equipos — headers row 3, data from row 5
+    // Equipos
     allEquipos = [];
     equiposRows.forEach((r, i) => {
-      if (i < 4) return; // skip headers
-      if (!r[0] || !r[0].trim()) return;
-      allEquipos.push({
-        legajo: r[0].trim(),
-        tipo:   r[1] ? r[1].trim() : '',
-        propio: r[2] ? r[2].trim() : 'DVP',
-        estado: r[3] ? r[3].trim() : '',
-        obra:   r[4] ? r[4].trim() : ''
-      });
+      if (i < 4 || !r[0] || !r[0].trim()) return;
+      allEquipos.push({ legajo: r[0].trim(), tipo: r[1]||'', propio: r[2]||'DVP', estado: r[3]||'', obra: r[4]||'' });
     });
 
-    // Parse cuadrillas — headers row 2, data from row 3
+    // Cuadrillas
     allCuadrillas = [];
     cuadrillasRows.forEach((r, i) => {
-      if (i < 2) return;
-      if (!r[0] || !r[0].trim()) return;
-      allCuadrillas.push({
-        nombre:    r[0].trim(),
-        encargado: r[1] ? r[1].trim() : '',
-        obra:      r[2] ? r[2].trim() : ''
-      });
+      if (i < 2 || !r[0] || !r[0].trim()) return;
+      allCuadrillas.push({ nombre: r[0].trim(), encargado: r[1]||'', obra: r[2]||'' });
     });
 
     drawBase();
     drawObras();
+    renderTaller();
     renderSidebar();
 
   } catch(e) {
