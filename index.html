@@ -9,7 +9,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --navy:      #1B3A5C;
   --blue:      #2563EB;
@@ -21,7 +20,6 @@
   --red:       #EF4444;
   --red-lt:    #FEF2F2;
   --orange:    #F97316;
-  --orange-lt: #FFF7ED;
   --bg:        #F0F4F8;
   --surface:   #FFFFFF;
   --border:    #E2E8F0;
@@ -30,19 +28,10 @@
   --radius:    12px;
   --shadow:    0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
 }
+html, body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; }
 
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; }
-
-/* ── Layout ── */
-.layout { display: grid; grid-template-rows: 64px 1fr; min-height: 100vh; }
-
-/* ── Header ── */
-.header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 28px;
-  background: var(--navy);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
+/* Header */
+.header { display: flex; align-items: center; justify-content: space-between; padding: 0 28px; height: 64px; background: var(--navy); box-shadow: 0 2px 8px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100; }
 .header-brand { display: flex; align-items: center; gap: 12px; }
 .brand-icon { width: 36px; height: 36px; background: var(--yellow); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 .brand-title { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
@@ -50,204 +39,161 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .header-right { display: flex; align-items: center; gap: 12px; }
 .clock { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--yellow); letter-spacing: 1px; }
 .date-str { font-size: 11px; color: rgba(255,255,255,0.5); text-align: right; }
-.refresh-btn {
-  display: flex; align-items: center; gap: 6px;
-  padding: 7px 14px; border-radius: 8px;
-  border: 1.5px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8);
-  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
-  cursor: pointer; transition: all 0.15s;
-}
-.refresh-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); }
+.refresh-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+.refresh-btn:hover { background: rgba(255,255,255,0.15); }
 .refresh-btn svg { width: 13px; height: 13px; }
 
-/* ── Content ── */
+/* Content */
 .content { padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
 
-/* ── Tabs ── */
-.tabs-bar { display: flex; gap: 4px; border-bottom: 2px solid var(--border); padding-bottom: 0; margin-bottom: -2px; }
-.tab-btn {
-  padding: 9px 18px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
-  color: var(--muted); background: transparent; border: none;
-  border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.15s;
-  margin-bottom: -2px;
-}
-.tab-btn:hover { color: var(--navy); }
-.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* ── Metric cards ── */
+/* Metrics */
 .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.metric {
-  background: var(--surface); border-radius: var(--radius);
-  padding: 18px 20px; box-shadow: var(--shadow);
-  display: flex; align-items: center; gap: 16px;
-  position: relative; overflow: hidden;
-}
-.metric-icon {
-  width: 52px; height: 52px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; flex-shrink: 0;
-}
-.metric-icon.blue   { background: var(--blue-lt); }
+.metric { background: var(--surface); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px; position: relative; overflow: hidden; }
+.metric-accent { position: absolute; top: 0; left: 0; bottom: 0; width: 4px; border-radius: var(--radius) 0 0 var(--radius); }
+.metric-accent.blue { background: var(--blue); }
+.metric-accent.yellow { background: var(--yellow); }
+.metric-accent.green { background: var(--green); }
+.metric-accent.red { background: var(--red); }
+.metric-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.metric-icon.blue { background: var(--blue-lt); }
 .metric-icon.yellow { background: var(--yellow-lt); }
-.metric-icon.green  { background: var(--green-lt); }
-.metric-icon.red    { background: var(--red-lt); }
-.metric-body { flex: 1; }
+.metric-icon.green { background: var(--green-lt); }
+.metric-icon.red { background: var(--red-lt); }
 .metric-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
 .metric-value { font-size: 30px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 2px; }
 .metric-sub { font-size: 11px; color: var(--muted); }
-.metric-accent {
-  position: absolute; top: 0; left: 0; bottom: 0; width: 4px; border-radius: var(--radius) 0 0 var(--radius);
-}
-.metric-accent.blue   { background: var(--blue); }
-.metric-accent.yellow { background: var(--yellow); }
-.metric-accent.green  { background: var(--green); }
-.metric-accent.red    { background: var(--red); }
 
-/* ── Charts row ── */
-.charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-.chart-card {
-  background: var(--surface); border-radius: var(--radius);
-  padding: 20px; box-shadow: var(--shadow);
-}
-.chart-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+/* Charts + lists row */
+.main-row { display: grid; grid-template-columns: 280px 280px 1fr; gap: 16px; align-items: start; }
+
+/* Donut card */
+.chart-card { background: var(--surface); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.chart-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
 .chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
-.chart-wrap { position: relative; }
-.donut-wrap { display: flex; align-items: center; gap: 20px; }
-.donut-canvas { flex-shrink: 0; }
-.donut-legend { display: flex; flex-direction: column; gap: 8px; }
+.donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.donut-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 .donut-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
 .donut-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.donut-val { font-weight: 600; color: var(--navy); margin-left: auto; padding-left: 12px; }
+.donut-val { font-weight: 600; color: var(--navy); margin-left: auto; font-family: 'DM Mono', monospace; }
 
-/* ── Table card ── */
-.tcard { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-top: 0; }
-.tcard-header {
-  padding: 14px 20px; border-bottom: 1.5px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-  font-size: 13px; font-weight: 600; color: var(--navy);
-}
+/* Lists panel */
+.lists-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.list-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.list-header { padding: 12px 16px; border-bottom: 1.5px solid var(--border); font-size: 13px; font-weight: 600; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+.list-count { margin-left: auto; font-size: 11px; color: var(--muted); background: var(--bg); padding: 2px 8px; border-radius: 99px; border: 1px solid var(--border); }
+.list-body { overflow-y: auto; max-height: 340px; }
+.list-body::-webkit-scrollbar { width: 4px; }
+.list-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+.list-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; border-bottom: 1px solid var(--border); }
+.list-item:last-child { border-bottom: none; }
+.list-item:hover { background: #F8FAFC; }
+.list-name { flex: 1; font-size: 12px; color: var(--text); line-height: 1.3; min-width: 0; }
+.list-ruta { font-size: 10px; color: var(--muted); }
+
+/* Bar inline */
+.bar-wrap { display: flex; align-items: center; gap: 8px; min-width: 100px; }
+.bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 99px; }
+.bar-pct { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); min-width: 30px; text-align: right; font-weight: 500; }
+
+/* Terminados table */
+.tcard { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.tcard-header { padding: 14px 20px; border-bottom: 1.5px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--navy); }
 .tcard-count { margin-left: auto; font-size: 11px; color: var(--muted); background: var(--bg); padding: 2px 10px; border-radius: 99px; border: 1px solid var(--border); }
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
-thead th {
-  padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 0.6px;
-  border-bottom: 1.5px solid var(--border); text-align: left;
-  background: var(--bg); white-space: nowrap;
-}
+thead th { padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 1.5px solid var(--border); text-align: left; background: var(--bg); white-space: nowrap; }
 tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 13px; vertical-align: middle; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { background: #F8FAFC; }
-
-/* ── Badges ── */
 .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
-.badge-green  { background: var(--green-lt);  color: #065F46; }
-.badge-red    { background: var(--red-lt);    color: #991B1B; }
-.badge-blue   { background: var(--blue-lt);   color: #1D4ED8; }
-.badge-yellow { background: var(--yellow-lt); color: #92400E; }
+.badge-green { background: var(--green-lt); color: #065F46; }
+.badge-red   { background: var(--red-lt);   color: #991B1B; }
 
-/* ── Bar ── */
-.bar-wrap { display: flex; align-items: center; gap: 10px; min-width: 140px; }
-.bar-track { flex: 1; height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 99px; }
-.bar-pct { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); min-width: 32px; text-align: right; font-weight: 500; }
-
-/* ── Section sep ── */
-.ruta-sep td { background: var(--navy) !important; color: #fff !important; font-weight: 600 !important; font-size: 12px !important; letter-spacing: 0.5px; padding: 8px 14px !important; }
-
-/* ── Loading ── */
-.loading-msg { padding: 2.5rem; text-align: center; color: var(--muted); font-size: 14px; }
+.update-line { text-align: right; font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.loading-msg { padding: 2rem; text-align: center; color: var(--muted); }
 .error-msg { margin: 1rem; padding: 12px 16px; background: var(--red-lt); color: var(--red); border-radius: 8px; font-size: 13px; }
-.update-line { text-align: right; font-size: 11px; color: var(--muted); margin-top: 8px; font-family: 'DM Mono', monospace; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinning { animation: spin 0.6s linear infinite; }
 </style>
 </head>
 <body>
-<div class="layout">
 
-  <header class="header">
-    <div class="header-brand">
-      <div class="brand-icon">🏗️</div>
-      <div>
-        <div class="brand-title">Obras 2026</div>
-      </div>
-      <span class="brand-sub">Dirección de Vialidad Provincial — Estado y avance</span>
-    </div>
-    <div class="header-right">
-      <div>
-        <div class="clock" id="clock">--:--</div>
-        <div class="date-str" id="datestr">--</div>
-      </div>
-      <button class="refresh-btn" onclick="loadAll()">
-        <svg id="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M23 4v6h-6M1 20v-6h6"/>
-          <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
-        </svg>
-        Actualizar
-      </button>
-    </div>
-  </header>
-
-  <div class="content">
-
-    <!-- Metrics -->
-    <div class="metrics" id="metrics">
-      <div class="metric"><div class="metric-accent blue"></div><div class="metric-icon blue">✅</div><div class="metric-body"><div class="metric-label">Terminadas</div><div class="metric-value">—</div></div></div>
-      <div class="metric"><div class="metric-accent yellow"></div><div class="metric-icon yellow">🚧</div><div class="metric-body"><div class="metric-label">Pendientes Metro</div><div class="metric-value">—</div></div></div>
-      <div class="metric"><div class="metric-accent green"></div><div class="metric-icon green">🛣️</div><div class="metric-body"><div class="metric-label">Pendientes Rutas</div><div class="metric-value">—</div></div></div>
-      <div class="metric"><div class="metric-accent red"></div><div class="metric-icon red">📊</div><div class="metric-body"><div class="metric-label">Avance promedio</div><div class="metric-value">—</div></div></div>
-    </div>
-
-    <!-- Charts -->
-    <div class="charts-row">
-      <!-- Donut terminadas vs pendientes -->
-      <div class="chart-card">
-        <div class="chart-title">Estado general de obras</div>
-        <div class="chart-sub">Terminadas vs. pendientes 2026</div>
-        <div class="donut-wrap">
-          <canvas class="donut-canvas" id="donut-estado" width="140" height="140"></canvas>
-          <div class="donut-legend" id="donut-estado-legend"></div>
-        </div>
-      </div>
-      <!-- Donut avance pendientes -->
-      <div class="chart-card">
-        <div class="chart-title">Avance de obras pendientes</div>
-        <div class="chart-sub">Distribución por estado de progreso</div>
-        <div class="donut-wrap">
-          <canvas class="donut-canvas" id="donut-avance" width="140" height="140"></canvas>
-          <div class="donut-legend" id="donut-avance-legend"></div>
-        </div>
-      </div>
-      <!-- Bar chart Metro vs Rutas -->
-      <div class="chart-card">
-        <div class="chart-title">Pendientes por zona</div>
-        <div class="chart-sub">Metropolitana vs. Rutas Provinciales</div>
-        <canvas id="bar-zonas" height="140"></canvas>
-      </div>
-    </div>
-
-    <!-- Tabs -->
+<header class="header">
+  <div class="header-brand">
+    <div class="brand-icon">🏗️</div>
     <div>
-      <div class="tabs-bar">
-        <button class="tab-btn active" onclick="showTab('terminados',this)">✅ Terminados</button>
-        <button class="tab-btn" onclick="showTab('metro',this)">📍 Metropolitana</button>
-        <button class="tab-btn" onclick="showTab('rutas',this)">🛣️ RP 57 y 63</button>
-      </div>
+      <div class="brand-title">Obras 2026</div>
+    </div>
+    <span class="brand-sub">Dirección de Vialidad Provincial — Estado y avance</span>
+  </div>
+  <div class="header-right">
+    <div>
+      <div class="clock" id="clock">--:--</div>
+      <div class="date-str" id="datestr">--</div>
+    </div>
+    <button class="refresh-btn" onclick="loadAll()">
+      <svg id="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 4v6h-6M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+      </svg>
+      Actualizar
+    </button>
+  </div>
+</header>
 
-      <div style="margin-top:16px">
-        <div id="terminados" class="tab-panel active"><div class="loading-msg">Cargando...</div></div>
-        <div id="metro"      class="tab-panel"><div class="loading-msg">Cargando...</div></div>
-        <div id="rutas"      class="tab-panel"><div class="loading-msg">Cargando...</div></div>
+<div class="content">
+
+  <!-- Métricas -->
+  <div class="metrics" id="metrics">
+    <div class="metric"><div class="metric-accent blue"></div><div class="metric-icon blue">✅</div><div><div class="metric-label">Terminadas</div><div class="metric-value">—</div></div></div>
+    <div class="metric"><div class="metric-accent yellow"></div><div class="metric-icon yellow">🚧</div><div><div class="metric-label">Pendientes Metro</div><div class="metric-value">—</div></div></div>
+    <div class="metric"><div class="metric-accent green"></div><div class="metric-icon green">🛣️</div><div><div class="metric-label">Pendientes Rutas</div><div class="metric-value">—</div></div></div>
+    <div class="metric"><div class="metric-accent red"></div><div class="metric-icon red">📊</div><div><div class="metric-label">Avance promedio</div><div class="metric-value">—</div></div></div>
+  </div>
+
+  <!-- Gráficos + listas -->
+  <div class="main-row">
+    <!-- Donut 1 -->
+    <div class="chart-card">
+      <div class="chart-title">Estado general</div>
+      <div class="chart-sub">Terminadas vs. pendientes 2026</div>
+      <div class="donut-wrap">
+        <canvas id="donut-estado" width="180" height="180"></canvas>
+        <div class="donut-legend" id="donut-estado-legend"></div>
       </div>
     </div>
 
-    <div class="update-line" id="update-line"></div>
+    <!-- Donut 2 -->
+    <div class="chart-card">
+      <div class="chart-title">Avance de pendientes</div>
+      <div class="chart-sub">Distribución por estado de progreso</div>
+      <div class="donut-wrap">
+        <canvas id="donut-avance" width="180" height="180"></canvas>
+        <div class="donut-legend" id="donut-avance-legend"></div>
+      </div>
+    </div>
+
+    <!-- Listas -->
+    <div class="lists-panel">
+      <div class="list-card">
+        <div class="list-header">📍 Metropolitana <span class="list-count" id="cnt-metro">—</span></div>
+        <div class="list-body" id="list-metro"></div>
+      </div>
+      <div class="list-card">
+        <div class="list-header">🛣️ Rutas 57 y 63 <span class="list-count" id="cnt-rutas">—</span></div>
+        <div class="list-body" id="list-rutas"></div>
+      </div>
+    </div>
   </div>
+
+  <!-- Terminados -->
+  <div class="tcard" id="tcard-terminados">
+    <div class="loading-msg">Cargando...</div>
+  </div>
+
+  <div class="update-line" id="update-line"></div>
 </div>
 
 <script>
@@ -267,8 +213,7 @@ function parseCSV(text) {
       else if (line[i] === ',' && !inQ) { cells.push(cur.trim()); cur = ''; }
       else { cur += line[i]; }
     }
-    cells.push(cur.trim());
-    return cells;
+    cells.push(cur.trim()); return cells;
   });
 }
 
@@ -287,19 +232,22 @@ function fmtDate(v) {
   return s;
 }
 
-function barHTML(rawVal) {
-  let p = 0;
-  const s = String(rawVal||'').trim();
+function getPct(val) {
+  const s = String(val||'').trim();
   const m = s.match(/(\d+)%\s*$/);
-  if (m) p = parseInt(m[1]) / 100;
-  else { p = parseFloat(s); if (p > 1) p = p / 100; }
-  p = Math.min(Math.max(p || 0, 0), 1);
-  const pct = Math.round(p * 100);
+  if (m) return parseInt(m[1]) / 100;
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n > 1 ? n/100 : n;
+}
+
+function barHTML(pct) {
+  const p = Math.min(Math.max(pct, 0), 1);
+  const pctN = Math.round(p * 100);
   let color = '#EF4444';
   if (p >= 1) color = '#10B981';
   else if (p >= 0.5) color = '#F59E0B';
   else if (p > 0) color = '#F97316';
-  return `<div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span class="bar-pct">${pct}%</span></div>`;
+  return `<div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${pctN}%;background:${color}"></div></div><span class="bar-pct">${pctN}%</span></div>`;
 }
 
 function estadoBadge(v) {
@@ -311,187 +259,20 @@ function estadoBadge(v) {
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── Charts ─────────────────────────────────────────────────────────────────
 function makeDonut(id, data, labels, colors, legendId) {
   if (charts[id]) charts[id].destroy();
   const ctx = document.getElementById(id).getContext('2d');
   charts[id] = new Chart(ctx, {
     type: 'doughnut',
     data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverOffset: 4 }] },
-    options: {
-      cutout: '68%', responsive: false, plugins: { legend: { display: false }, tooltip: {
-        callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` }
-      }}
-    }
+    options: { cutout: '68%', responsive: false, plugins: { legend: { display: false } } }
   });
-  const legendEl = document.getElementById(legendId);
-  legendEl.innerHTML = labels.map((l, i) => `
+  document.getElementById(legendId).innerHTML = labels.map((l,i) => `
     <div class="donut-item">
       <div class="donut-dot" style="background:${colors[i]}"></div>
       <span style="color:#64748B">${l}</span>
       <span class="donut-val">${data[i]}</span>
     </div>`).join('');
-}
-
-function makeBar(id, labels, datasets) {
-  if (charts[id]) charts[id].destroy();
-  const ctx = document.getElementById(id).getContext('2d');
-  charts[id] = new Chart(ctx, {
-    type: 'bar',
-    data: { labels, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { font: { size: 11, family: 'Inter' }, boxWidth: 12, padding: 12 } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
-        y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 11 }, stepSize: 1 }, beginAtZero: true }
-      }
-    }
-  });
-}
-
-// ── Render ─────────────────────────────────────────────────────────────────
-function renderMetrics(termRows, metroRows, rutasRows) {
-  const terms  = termRows.slice(2).filter(r => r[1]?.trim());
-  const metro  = metroRows.slice(2).filter(r => r[1]?.trim());
-  const rutas  = rutasRows.filter(r => {
-    const f = String(r[0]||'').trim();
-    return f && !f.includes('RUTA PROVINCIAL') && f !== 'TAREA' && f !== 'TAREA PENDIENTE' && !f.includes('OBRAS PENDIENTES') && !f.includes('🛣');
-  });
-
-  const completados = terms.filter(r => String(r[7]||'').includes('🟢')).length;
-  const suspendidos = terms.filter(r => String(r[7]||'').includes('🔴')).length;
-
-  const getPct = val => {
-    const s = String(val||'').trim();
-    const m = s.match(/(\d+)%\s*$/);
-    if (m) return parseInt(m[1]) / 100;
-    const n = parseFloat(s); return isNaN(n) ? 0 : n > 1 ? n/100 : n;
-  };
-
-  const pctMetro = metro.map(r => getPct(r[8]||r[7]));
-  const pctRutas = rutas.map(r => getPct(r[4]||r[3]));
-  const allPct   = [...pctMetro, ...pctRutas].filter(v => v >= 0 && v <= 1);
-  const avg = allPct.length ? Math.round(allPct.reduce((a,b)=>a+b,0)/allPct.length*100) : 0;
-  const enCurso  = allPct.filter(v => v > 0 && v < 1).length;
-  const sinInic  = allPct.filter(v => v === 0).length;
-  const completas = allPct.filter(v => v >= 1).length;
-
-  document.getElementById('metrics').innerHTML = `
-    <div class="metric"><div class="metric-accent blue"></div><div class="metric-icon blue">✅</div>
-      <div class="metric-body"><div class="metric-label">Terminadas</div><div class="metric-value">${terms.length}</div>
-      <div class="metric-sub">${completados} completas · ${suspendidos} suspendidas</div></div></div>
-    <div class="metric"><div class="metric-accent yellow"></div><div class="metric-icon yellow">🚧</div>
-      <div class="metric-body"><div class="metric-label">Pendientes Metro</div><div class="metric-value">${metro.length}</div>
-      <div class="metric-sub">${metro.filter(r=>getPct(r[8]||r[7])===0).length} sin iniciar</div></div></div>
-    <div class="metric"><div class="metric-accent green"></div><div class="metric-icon green">🛣️</div>
-      <div class="metric-body"><div class="metric-label">Pendientes Rutas</div><div class="metric-value">${rutas.length}</div>
-      <div class="metric-sub">${rutas.filter(r=>getPct(r[4]||r[3])===0).length} sin iniciar</div></div></div>
-    <div class="metric"><div class="metric-accent red"></div><div class="metric-icon red">📊</div>
-      <div class="metric-body"><div class="metric-label">Avance promedio</div><div class="metric-value">${avg}%</div>
-      <div class="metric-sub">${enCurso} en curso · ${completas} completas</div></div></div>`;
-
-  // Donut 1: terminadas vs pendientes totales
-  makeDonut('donut-estado',
-    [terms.length, metro.length + rutas.length],
-    ['Terminadas', 'Pendientes'],
-    ['#10B981', '#F59E0B'],
-    'donut-estado-legend'
-  );
-
-  // Donut 2: sin iniciar / en curso / completas
-  makeDonut('donut-avance',
-    [sinInic, enCurso, completas],
-    ['Sin iniciar', 'En curso', 'Completas'],
-    ['#EF4444', '#F97316', '#10B981'],
-    'donut-avance-legend'
-  );
-
-  // Bar: metro vs rutas (sin iniciar / en curso / completas)
-  const mSin   = pctMetro.filter(v=>v===0).length;
-  const mCurso = pctMetro.filter(v=>v>0&&v<1).length;
-  const mComp  = pctMetro.filter(v=>v>=1).length;
-  const rSin   = pctRutas.filter(v=>v===0).length;
-  const rCurso = pctRutas.filter(v=>v>0&&v<1).length;
-  const rComp  = pctRutas.filter(v=>v>=1).length;
-
-  makeBar('bar-zonas',
-    ['Sin iniciar', 'En curso', 'Completas'],
-    [
-      { label: 'Metropolitana', data: [mSin, mCurso, mComp], backgroundColor: '#2563EB', borderRadius: 5 },
-      { label: 'Rutas Prov.', data: [rSin, rCurso, rComp], backgroundColor: '#F59E0B', borderRadius: 5 },
-    ]
-  );
-}
-
-function renderTerminados(rows) {
-  const data = rows.slice(2).filter(r => r[1]?.trim());
-  document.getElementById('terminados').innerHTML = `
-    <div class="tcard">
-      <div class="tcard-header">✅ Obras terminadas 2026 <span class="tcard-count">${data.length} registros</span></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Tarea</th><th>Estado</th><th>Fin</th></tr></thead>
-        <tbody>${data.map(r => `<tr>
-          <td style="max-width:340px">${esc(r[1])}</td>
-          <td>${estadoBadge(r[7])}</td>
-          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[8])}</td>
-        </tr>`).join('')}</tbody>
-      </table></div>
-    </div>`;
-}
-
-function renderMetro(rows) {
-  const data = rows.slice(2).filter(r => r[1]?.trim());
-  document.getElementById('metro').innerHTML = `
-    <div class="tcard">
-      <div class="tcard-header">📍 Pendientes — Área Metropolitana <span class="tcard-count">${data.length} registros</span></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Fecha</th><th>Tarea</th><th>Inicio</th><th style="min-width:160px">Avance</th><th>Fin</th></tr></thead>
-        <tbody>${data.map(r => `<tr>
-          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[0])}</td>
-          <td style="max-width:280px">${esc(r[1])}</td>
-          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[6])}</td>
-          <td>${barHTML(r[8])}</td>
-          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[9])}</td>
-        </tr>`).join('')}</tbody>
-      </table></div>
-    </div>`;
-}
-
-function renderRutas(rows) {
-  let html = ''; let currentRuta = ''; let tableRows = ''; let hasRows = false; let count = 0;
-  function closeTable() {
-    if (!hasRows) return;
-    html += `<div class="tcard" style="margin-bottom:16px">
-      <div class="tcard-header">🛣️ ${esc(currentRuta)} <span class="tcard-count">${count} registros</span></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Tarea</th><th>Descripción</th><th style="min-width:160px">Avance</th><th>Fin</th></tr></thead>
-        <tbody>${tableRows}</tbody>
-      </table></div></div>`;
-    tableRows = ''; hasRows = false; count = 0;
-  }
-  rows.forEach(r => {
-    const f = String(r[0]||'').trim();
-    if (!f) return;
-    if (f.startsWith('RUTA PROVINCIAL') || (f.includes('RUTA') && f.includes('🛣'))) { closeTable(); currentRuta = f.replace(/🛣️|🛣/g,'').trim(); return; }
-    if (f === 'TAREA' || f === 'TAREA PENDIENTE' || f.includes('OBRAS PENDIENTES')) return;
-    tableRows += `<tr>
-      <td style="max-width:200px">${esc(r[0])}</td>
-      <td style="max-width:200px;color:var(--muted)">${esc(r[1])}</td>
-      <td>${barHTML(r[4])}</td>
-      <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[5])}</td>
-    </tr>`;
-    hasRows = true; count++;
-  });
-  closeTable();
-  document.getElementById('rutas').innerHTML = html || '<div class="loading-msg">Sin datos</div>';
-}
-
-function showTab(id, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
 }
 
 async function loadAll() {
@@ -501,18 +282,69 @@ async function loadAll() {
     const [termRows, metroRows, rutasRows] = await Promise.all([
       fetchCSV(URLS.terminados), fetchCSV(URLS.metro), fetchCSV(URLS.rutas)
     ]);
-    renderMetrics(termRows, metroRows, rutasRows);
-    renderTerminados(termRows);
-    renderMetro(metroRows);
-    renderRutas(rutasRows);
+
+    const terms = termRows.slice(2).filter(r => r[1]?.trim());
+    const metro = metroRows.slice(2).filter(r => r[1]?.trim());
+    const rutas = rutasRows.filter(r => {
+      const f = String(r[0]||'').trim();
+      return f && !f.includes('RUTA PROVINCIAL') && f !== 'TAREA' && f !== 'TAREA PENDIENTE' && !f.includes('OBRAS PENDIENTES') && !f.includes('🛣');
+    });
+
+    const completados = terms.filter(r => String(r[7]||'').includes('🟢')).length;
+    const suspendidos = terms.filter(r => String(r[7]||'').includes('🔴')).length;
+    const pctMetro = metro.map(r => getPct(r[8]||r[7]));
+    const pctRutas = rutas.map(r => getPct(r[4]||r[3]));
+    const allPct = [...pctMetro, ...pctRutas].filter(v => v >= 0 && v <= 1);
+    const avg = allPct.length ? Math.round(allPct.reduce((a,b)=>a+b,0)/allPct.length*100) : 0;
+    const enCurso = allPct.filter(v => v > 0 && v < 1).length;
+    const completas = allPct.filter(v => v >= 1).length;
+    const sinInic = allPct.filter(v => v === 0).length;
+
+    // Métricas
+    document.getElementById('metrics').innerHTML = `
+      <div class="metric"><div class="metric-accent blue"></div><div class="metric-icon blue">✅</div><div><div class="metric-label">Terminadas</div><div class="metric-value">${terms.length}</div><div class="metric-sub">${completados} completas · ${suspendidos} suspendidas</div></div></div>
+      <div class="metric"><div class="metric-accent yellow"></div><div class="metric-icon yellow">🚧</div><div><div class="metric-label">Pendientes Metro</div><div class="metric-value">${metro.length}</div><div class="metric-sub">${pctMetro.filter(v=>v===0).length} sin iniciar</div></div></div>
+      <div class="metric"><div class="metric-accent green"></div><div class="metric-icon green">🛣️</div><div><div class="metric-label">Pendientes Rutas</div><div class="metric-value">${rutas.length}</div><div class="metric-sub">${pctRutas.filter(v=>v===0).length} sin iniciar</div></div></div>
+      <div class="metric"><div class="metric-accent red"></div><div class="metric-icon red">📊</div><div><div class="metric-label">Avance promedio</div><div class="metric-value">${avg}%</div><div class="metric-sub">${enCurso} en curso · ${completas} completas</div></div></div>`;
+
+    // Donuts
+    makeDonut('donut-estado', [terms.length, metro.length + rutas.length], ['Terminadas','Pendientes'], ['#10B981','#F59E0B'], 'donut-estado-legend');
+    makeDonut('donut-avance', [sinInic, enCurso, completas], ['Sin iniciar','En curso','Completas'], ['#EF4444','#F97316','#10B981'], 'donut-avance-legend');
+
+    // Lista Metro
+    document.getElementById('cnt-metro').textContent = metro.length;
+    document.getElementById('list-metro').innerHTML = metro.map(r => {
+      const p = getPct(r[8]||r[7]);
+      return `<div class="list-item"><div class="list-name">${esc(r[1])}</div>${barHTML(p)}</div>`;
+    }).join('');
+
+    // Lista Rutas
+    document.getElementById('cnt-rutas').textContent = rutas.length;
+    document.getElementById('list-rutas').innerHTML = rutas.map(r => {
+      const p = getPct(r[4]||r[3]);
+      const nombre = String(r[0]||'').replace(/^RUTA \d+:\s*/i,'');
+      return `<div class="list-item"><div class="list-name">${esc(nombre)}</div>${barHTML(p)}</div>`;
+    }).join('');
+
+    // Terminados
+    document.getElementById('tcard-terminados').innerHTML = `
+      <div class="tcard-header">✅ Obras terminadas 2026 <span class="tcard-count">${terms.length} registros</span></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Tarea</th><th>Estado</th><th>Fin</th></tr></thead>
+        <tbody>${terms.map(r => `<tr>
+          <td style="max-width:400px">${esc(r[1])}</td>
+          <td>${estadoBadge(r[7])}</td>
+          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[8])}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+
     const now = new Date();
     document.getElementById('update-line').textContent =
       'Última actualización: ' + now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}) +
       ' · ' + now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+
   } catch(e) {
-    ['terminados','metro','rutas'].forEach(id => {
-      document.getElementById(id).innerHTML = `<div class="error-msg">⚠ No se pudo cargar la información. Verificá la conexión e intentá de nuevo.</div>`;
-    });
+    document.getElementById('tcard-terminados').innerHTML = `<div class="error-msg">⚠ No se pudo cargar la información. Verificá la conexión e intentá de nuevo.</div>`;
   } finally { icon.classList.remove('spinning'); }
 }
 
