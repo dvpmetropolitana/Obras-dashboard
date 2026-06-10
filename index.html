@@ -3,228 +3,165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Obras 2026 — Dashboard</title>
+<title>Obras 2026 — Dashboard DVP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --navy:    #0D2137;
-  --blue:    #1A5FA8;
-  --blue-lt: #2E80D8;
-  --steel:   #3C5A78;
-  --bg:      #0A1929;
-  --surface: #0F2840;
-  --surface2:#152F4A;
-  --border:  rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.14);
-  --text:    #E8F1FA;
-  --muted:   #7A9AB8;
-  --green:   #1DB87A;
-  --green-bg:#0D2E1E;
-  --yellow:  #F0A30A;
-  --yellow-bg:#2A200A;
-  --orange:  #E8701A;
-  --orange-bg:#2A1608;
-  --red:     #E24B4A;
-  --red-bg:  #2A0D0D;
-  --accent:  #4EADFF;
+  --navy:      #1B3A5C;
+  --blue:      #2563EB;
+  --blue-lt:   #EFF6FF;
+  --yellow:    #F59E0B;
+  --yellow-lt: #FFFBEB;
+  --green:     #10B981;
+  --green-lt:  #ECFDF5;
+  --red:       #EF4444;
+  --red-lt:    #FEF2F2;
+  --orange:    #F97316;
+  --orange-lt: #FFF7ED;
+  --bg:        #F0F4F8;
+  --surface:   #FFFFFF;
+  --border:    #E2E8F0;
+  --text:      #1E293B;
+  --muted:     #64748B;
+  --radius:    12px;
+  --shadow:    0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
 }
 
-html, body {
-  height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; }
 
 /* ── Layout ── */
-.layout {
-  display: grid;
-  grid-template-rows: auto auto 1fr;
-  min-height: 100vh;
-  padding: 20px 24px 16px;
-  gap: 16px;
-}
+.layout { display: grid; grid-template-rows: 64px 1fr; min-height: 100vh; }
 
 /* ── Header ── */
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 0.5px solid var(--border2);
-  padding-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+  background: var(--navy);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.brand-icon {
-  width: 38px; height: 38px;
-  background: var(--blue);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-}
-.brand-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
-.brand-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.header-brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon { width: 36px; height: 36px; background: var(--yellow); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.brand-title { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+.brand-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-left: 8px; }
 .header-right { display: flex; align-items: center; gap: 12px; }
-.clock { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: var(--accent); letter-spacing: 1px; }
-.date-str { font-size: 12px; color: var(--muted); text-align: right; }
+.clock { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--yellow); letter-spacing: 1px; }
+.date-str { font-size: 11px; color: rgba(255,255,255,0.5); text-align: right; }
 .refresh-btn {
   display: flex; align-items: center; gap: 6px;
   padding: 7px 14px; border-radius: 8px;
-  border: 0.5px solid var(--border2);
-  background: var(--surface2); color: var(--muted);
-  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8);
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
   cursor: pointer; transition: all 0.15s;
 }
-.refresh-btn:hover { background: var(--blue); color: var(--text); border-color: var(--blue-lt); }
-.refresh-btn svg { width: 14px; height: 14px; }
-
-/* ── Metrics ── */
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-.metric {
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  position: relative;
-  overflow: hidden;
-}
-.metric::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--blue);
-}
-.metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
-.metric-value { font-size: 32px; font-weight: 600; color: var(--text); line-height: 1; margin-bottom: 4px; }
-.metric-sub { font-size: 12px; color: var(--muted); }
-.metric.green::before { background: var(--green); }
-.metric.yellow::before { background: var(--yellow); }
-.metric.red::before { background: var(--red); }
-
-/* ── Tabs ── */
-.tabs-bar {
-  display: flex;
-  gap: 4px;
-  border-bottom: 0.5px solid var(--border);
-  padding-bottom: 0;
-  margin-bottom: -1px;
-}
-.tab-btn {
-  padding: 9px 18px;
-  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-  color: var(--muted); background: transparent;
-  border: none; border-bottom: 2px solid transparent;
-  cursor: pointer; transition: all 0.15s;
-  display: flex; align-items: center; gap: 7px;
-}
-.tab-btn:hover { color: var(--text); }
-.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-.tab-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
-.tab-btn.active .tab-dot { background: var(--accent); }
+.refresh-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); }
+.refresh-btn svg { width: 13px; height: 13px; }
 
 /* ── Content ── */
-.content-area { overflow: hidden; }
-.tab-panel { display: none; height: 100%; }
+.content { padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Tabs ── */
+.tabs-bar { display: flex; gap: 4px; border-bottom: 2px solid var(--border); padding-bottom: 0; margin-bottom: -2px; }
+.tab-btn {
+  padding: 9px 18px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--muted); background: transparent; border: none;
+  border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.15s;
+  margin-bottom: -2px;
+}
+.tab-btn:hover { color: var(--navy); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+.tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* ── Table card ── */
-.tcard {
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-top: 14px;
+/* ── Metric cards ── */
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.metric {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 18px 20px; box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 16px;
+  position: relative; overflow: hidden;
 }
-.tcard-header {
-  padding: 11px 16px;
-  background: var(--surface2);
-  border-bottom: 0.5px solid var(--border);
-  font-size: 13px; font-weight: 500; color: var(--text);
-  display: flex; align-items: center; gap: 8px;
+.metric-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
 }
-.tcard-header-icon { font-size: 15px; color: var(--accent); }
-.tcard-count {
-  margin-left: auto;
-  font-size: 11px; color: var(--muted);
-  background: var(--bg);
-  padding: 2px 8px; border-radius: 99px;
-  border: 0.5px solid var(--border);
+.metric-icon.blue   { background: var(--blue-lt); }
+.metric-icon.yellow { background: var(--yellow-lt); }
+.metric-icon.green  { background: var(--green-lt); }
+.metric-icon.red    { background: var(--red-lt); }
+.metric-body { flex: 1; }
+.metric-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+.metric-value { font-size: 30px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 2px; }
+.metric-sub { font-size: 11px; color: var(--muted); }
+.metric-accent {
+  position: absolute; top: 0; left: 0; bottom: 0; width: 4px; border-radius: var(--radius) 0 0 var(--radius);
 }
+.metric-accent.blue   { background: var(--blue); }
+.metric-accent.yellow { background: var(--yellow); }
+.metric-accent.green  { background: var(--green); }
+.metric-accent.red    { background: var(--red); }
 
+/* ── Charts row ── */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.chart-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 20px; box-shadow: var(--shadow);
+}
+.chart-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+.chart-wrap { position: relative; }
+.donut-wrap { display: flex; align-items: center; gap: 20px; }
+.donut-canvas { flex-shrink: 0; }
+.donut-legend { display: flex; flex-direction: column; gap: 8px; }
+.donut-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.donut-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.donut-val { font-weight: 600; color: var(--navy); margin-left: auto; padding-left: 12px; }
+
+/* ── Table card ── */
+.tcard { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-top: 0; }
+.tcard-header {
+  padding: 14px 20px; border-bottom: 1.5px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 600; color: var(--navy);
+}
+.tcard-count { margin-left: auto; font-size: 11px; color: var(--muted); background: var(--bg); padding: 2px 10px; border-radius: 99px; border: 1px solid var(--border); }
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 thead th {
-  padding: 9px 12px;
-  font-size: 11px; font-weight: 500; color: var(--muted);
+  padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--muted);
   text-transform: uppercase; letter-spacing: 0.6px;
-  border-bottom: 0.5px solid var(--border);
-  text-align: left; white-space: nowrap;
-  background: var(--surface2);
+  border-bottom: 1.5px solid var(--border); text-align: left;
+  background: var(--bg); white-space: nowrap;
 }
-tbody td {
-  padding: 9px 12px;
-  border-bottom: 0.5px solid var(--border);
-  color: var(--text); font-size: 13px;
-  vertical-align: middle;
-}
+tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 13px; vertical-align: middle; }
 tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover td { background: var(--surface2); }
-
-/* ── Section separator (rutas) ── */
-.ruta-sep td {
-  background: var(--steel) !important;
-  color: #fff !important;
-  font-weight: 600 !important;
-  font-size: 12px !important;
-  letter-spacing: 0.5px;
-  padding: 7px 12px !important;
-}
+tbody tr:hover td { background: #F8FAFC; }
 
 /* ── Badges ── */
-.badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 11px; font-weight: 500; padding: 3px 9px;
-  border-radius: 99px; white-space: nowrap;
-}
-.badge-green  { background: var(--green-bg);  color: var(--green);  }
-.badge-red    { background: var(--red-bg);    color: var(--red);    }
-.badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
-.badge-blue   { background: rgba(78,173,255,0.12); color: var(--accent); }
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+.badge-green  { background: var(--green-lt);  color: #065F46; }
+.badge-red    { background: var(--red-lt);    color: #991B1B; }
+.badge-blue   { background: var(--blue-lt);   color: #1D4ED8; }
+.badge-yellow { background: var(--yellow-lt); color: #92400E; }
 
-/* ── Progress bar ── */
-.bar-wrap { display: flex; align-items: center; gap: 9px; min-width: 150px; }
-.bar-track {
-  flex: 1; height: 6px;
-  background: rgba(255,255,255,0.07);
-  border-radius: 99px; overflow: hidden;
-}
+/* ── Bar ── */
+.bar-wrap { display: flex; align-items: center; gap: 10px; min-width: 140px; }
+.bar-track { flex: 1; height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 99px; }
-.bar-pct { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); min-width: 34px; text-align: right; }
+.bar-pct { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); min-width: 32px; text-align: right; font-weight: 500; }
 
-/* ── Loading / error ── */
-.loading-msg { padding: 2rem; text-align: center; color: var(--muted); font-size: 14px; }
-.error-msg {
-  margin: 1rem; padding: 12px 16px;
-  background: var(--red-bg); color: var(--red);
-  border-radius: 8px; border: 0.5px solid rgba(226,75,74,0.3);
-  font-size: 13px;
-}
-.update-line {
-  text-align: right; font-size: 11px; color: var(--muted);
-  margin-top: 10px; font-family: 'DM Mono', monospace;
-}
+/* ── Section sep ── */
+.ruta-sep td { background: var(--navy) !important; color: #fff !important; font-weight: 600 !important; font-size: 12px !important; letter-spacing: 0.5px; padding: 8px 14px !important; }
+
+/* ── Loading ── */
+.loading-msg { padding: 2.5rem; text-align: center; color: var(--muted); font-size: 14px; }
+.error-msg { margin: 1rem; padding: 12px 16px; background: var(--red-lt); color: var(--red); border-radius: 8px; font-size: 13px; }
+.update-line { text-align: right; font-size: 11px; color: var(--muted); margin-top: 8px; font-family: 'DM Mono', monospace; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinning { animation: spin 0.6s linear infinite; }
@@ -233,21 +170,20 @@ tbody tr:hover td { background: var(--surface2); }
 <body>
 <div class="layout">
 
-  <!-- Header -->
   <header class="header">
     <div class="header-brand">
       <div class="brand-icon">🏗️</div>
       <div>
         <div class="brand-title">Obras 2026</div>
-        <div class="brand-sub">Dirección de Obras — Estado y avance</div>
       </div>
+      <span class="brand-sub">Dirección de Vialidad Provincial — Estado y avance</span>
     </div>
     <div class="header-right">
       <div>
         <div class="clock" id="clock">--:--</div>
         <div class="date-str" id="datestr">--</div>
       </div>
-      <button class="refresh-btn" onclick="loadAll()" id="refresh-btn">
+      <button class="refresh-btn" onclick="loadAll()">
         <svg id="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M23 4v6h-6M1 20v-6h6"/>
           <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
@@ -257,37 +193,56 @@ tbody tr:hover td { background: var(--surface2); }
     </div>
   </header>
 
-  <!-- Metrics -->
-  <div class="metrics" id="metrics">
-    <div class="metric"><div class="metric-label">Cargando...</div><div class="metric-value">—</div></div>
-    <div class="metric"><div class="metric-label">Cargando...</div><div class="metric-value">—</div></div>
-    <div class="metric"><div class="metric-label">Cargando...</div><div class="metric-value">—</div></div>
-    <div class="metric"><div class="metric-label">Cargando...</div><div class="metric-value">—</div></div>
-  </div>
+  <div class="content">
 
-  <!-- Tabs + content -->
-  <div style="display:flex;flex-direction:column;overflow:hidden;">
-    <div class="tabs-bar">
-      <button class="tab-btn active" onclick="showTab('terminados',this)">
-        <span class="tab-dot"></span> Terminados
-      </button>
-      <button class="tab-btn" onclick="showTab('metro',this)">
-        <span class="tab-dot"></span> Área Metropolitana
-      </button>
-      <button class="tab-btn" onclick="showTab('rutas',this)">
-        <span class="tab-dot"></span> RP 57 y 63
-      </button>
+    <!-- Metrics -->
+    <div class="metrics" id="metrics">
+      <div class="metric"><div class="metric-accent blue"></div><div class="metric-icon blue">✅</div><div class="metric-body"><div class="metric-label">Terminadas</div><div class="metric-value">—</div></div></div>
+      <div class="metric"><div class="metric-accent yellow"></div><div class="metric-icon yellow">🚧</div><div class="metric-body"><div class="metric-label">Pendientes Metro</div><div class="metric-value">—</div></div></div>
+      <div class="metric"><div class="metric-accent green"></div><div class="metric-icon green">🛣️</div><div class="metric-body"><div class="metric-label">Pendientes Rutas</div><div class="metric-value">—</div></div></div>
+      <div class="metric"><div class="metric-accent red"></div><div class="metric-icon red">📊</div><div class="metric-body"><div class="metric-label">Avance promedio</div><div class="metric-value">—</div></div></div>
     </div>
 
-    <div class="content-area">
-      <div id="terminados" class="tab-panel active">
-        <div class="loading-msg">Cargando datos...</div>
+    <!-- Charts -->
+    <div class="charts-row">
+      <!-- Donut terminadas vs pendientes -->
+      <div class="chart-card">
+        <div class="chart-title">Estado general de obras</div>
+        <div class="chart-sub">Terminadas vs. pendientes 2026</div>
+        <div class="donut-wrap">
+          <canvas class="donut-canvas" id="donut-estado" width="140" height="140"></canvas>
+          <div class="donut-legend" id="donut-estado-legend"></div>
+        </div>
       </div>
-      <div id="metro" class="tab-panel">
-        <div class="loading-msg">Cargando datos...</div>
+      <!-- Donut avance pendientes -->
+      <div class="chart-card">
+        <div class="chart-title">Avance de obras pendientes</div>
+        <div class="chart-sub">Distribución por estado de progreso</div>
+        <div class="donut-wrap">
+          <canvas class="donut-canvas" id="donut-avance" width="140" height="140"></canvas>
+          <div class="donut-legend" id="donut-avance-legend"></div>
+        </div>
       </div>
-      <div id="rutas" class="tab-panel">
-        <div class="loading-msg">Cargando datos...</div>
+      <!-- Bar chart Metro vs Rutas -->
+      <div class="chart-card">
+        <div class="chart-title">Pendientes por zona</div>
+        <div class="chart-sub">Metropolitana vs. Rutas Provinciales</div>
+        <canvas id="bar-zonas" height="140"></canvas>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div>
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="showTab('terminados',this)">✅ Terminados</button>
+        <button class="tab-btn" onclick="showTab('metro',this)">📍 Metropolitana</button>
+        <button class="tab-btn" onclick="showTab('rutas',this)">🛣️ RP 57 y 63</button>
+      </div>
+
+      <div style="margin-top:16px">
+        <div id="terminados" class="tab-panel active"><div class="loading-msg">Cargando...</div></div>
+        <div id="metro"      class="tab-panel"><div class="loading-msg">Cargando...</div></div>
+        <div id="rutas"      class="tab-panel"><div class="loading-msg">Cargando...</div></div>
       </div>
     </div>
 
@@ -302,9 +257,10 @@ const URLS = {
   rutas:      'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-Cy1gHNylNZFz4Lz8u9ZwfNsJW8BwLngea4UwVmlvjYplYuWUyjX2HDYJ094O6g/pub?gid=984773082&single=true&output=csv'
 };
 
+let charts = {};
+
 function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  return lines.map(line => {
+  return text.trim().split('\n').map(line => {
     const cells = []; let cur = ''; let inQ = false;
     for (let i = 0; i < line.length; i++) {
       if (line[i] === '"') { inQ = !inQ; }
@@ -318,7 +274,7 @@ function parseCSV(text) {
 
 async function fetchCSV(url) {
   const r = await fetch(url);
-  if (!r.ok) throw new Error('No se pudo cargar la planilla (HTTP ' + r.status + ')');
+  if (!r.ok) throw new Error('HTTP ' + r.status);
   return parseCSV(await r.text());
 }
 
@@ -333,206 +289,201 @@ function fmtDate(v) {
 
 function barHTML(rawVal) {
   let p = 0;
-  if (rawVal !== null && rawVal !== undefined && rawVal !== '') {
-    const s = String(rawVal).trim();
-    // Si es el texto de barra con bloques █, extraer el número del final
-    const blockMatch = s.match(/(\d+)%\s*$/);
-    if (blockMatch) {
-      p = parseInt(blockMatch[1]) / 100;
-    } else if (s.endsWith('%')) {
-      p = parseFloat(s) / 100;
-    } else {
-      p = parseFloat(s);
-      if (p > 1) p = p / 100;
-    }
-  }
+  const s = String(rawVal||'').trim();
+  const m = s.match(/(\d+)%\s*$/);
+  if (m) p = parseInt(m[1]) / 100;
+  else { p = parseFloat(s); if (p > 1) p = p / 100; }
   p = Math.min(Math.max(p || 0, 0), 1);
-  let color;
-  if (p >= 1)        color = '#1DB87A';
-  else if (p >= 0.5) color = '#F0A30A';
-  else if (p > 0)    color = '#E8701A';
-  else               color = '#E24B4A';
   const pct = Math.round(p * 100);
-  return `<div class="bar-wrap">
-    <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
-    <span class="bar-pct">${pct}%</span>
-  </div>`;
+  let color = '#EF4444';
+  if (p >= 1) color = '#10B981';
+  else if (p >= 0.5) color = '#F59E0B';
+  else if (p > 0) color = '#F97316';
+  return `<div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span class="bar-pct">${pct}%</span></div>`;
 }
 
 function estadoBadge(v) {
-  if (!v) return '';
-  const s = String(v).trim();
+  const s = String(v||'').trim();
   if (s.includes('🟢')) return '<span class="badge badge-green">✔ Completo</span>';
   if (s.includes('🔴')) return '<span class="badge badge-red">✖ Suspendido</span>';
-  if (s.toLowerCase().includes('curso')) return '<span class="badge badge-yellow">↻ En curso</span>';
-  return `<span class="badge badge-blue">${s}</span>`;
+  return '';
 }
 
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Charts ─────────────────────────────────────────────────────────────────
+function makeDonut(id, data, labels, colors, legendId) {
+  if (charts[id]) charts[id].destroy();
+  const ctx = document.getElementById(id).getContext('2d');
+  charts[id] = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverOffset: 4 }] },
+    options: {
+      cutout: '68%', responsive: false, plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` }
+      }}
+    }
+  });
+  const legendEl = document.getElementById(legendId);
+  legendEl.innerHTML = labels.map((l, i) => `
+    <div class="donut-item">
+      <div class="donut-dot" style="background:${colors[i]}"></div>
+      <span style="color:#64748B">${l}</span>
+      <span class="donut-val">${data[i]}</span>
+    </div>`).join('');
 }
 
-async function loadAll() {
-  const icon = document.getElementById('refresh-icon');
-  icon.classList.add('spinning');
-  try {
-    const [termRows, metroRows, rutasRows] = await Promise.all([
-      fetchCSV(URLS.terminados),
-      fetchCSV(URLS.metro),
-      fetchCSV(URLS.rutas)
-    ]);
-    renderMetrics(termRows, metroRows, rutasRows);
-    renderTerminados(termRows);
-    renderMetro(metroRows);
-    renderRutas(rutasRows);
-    const now = new Date();
-    document.getElementById('update-line').textContent =
-      'Última actualización: ' +
-      now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}) +
-      ' · ' + now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
-  } catch(e) {
-    ['terminados','metro','rutas'].forEach(id => {
-      document.getElementById(id).innerHTML =
-        `<div class="error-msg">⚠ ${e.message}</div>`;
-    });
-  } finally {
-    icon.classList.remove('spinning');
-  }
+function makeBar(id, labels, datasets) {
+  if (charts[id]) charts[id].destroy();
+  const ctx = document.getElementById(id).getContext('2d');
+  charts[id] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11, family: 'Inter' }, boxWidth: 12, padding: 12 } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 11 }, stepSize: 1 }, beginAtZero: true }
+      }
+    }
+  });
 }
 
+// ── Render ─────────────────────────────────────────────────────────────────
 function renderMetrics(termRows, metroRows, rutasRows) {
-  const terms = termRows.slice(2).filter(r => r[1] && r[1].trim());
+  const terms  = termRows.slice(2).filter(r => r[1]?.trim());
+  const metro  = metroRows.slice(2).filter(r => r[1]?.trim());
+  const rutas  = rutasRows.filter(r => {
+    const f = String(r[0]||'').trim();
+    return f && !f.includes('RUTA PROVINCIAL') && f !== 'TAREA' && f !== 'TAREA PENDIENTE' && !f.includes('OBRAS PENDIENTES') && !f.includes('🛣');
+  });
+
   const completados = terms.filter(r => String(r[7]||'').includes('🟢')).length;
   const suspendidos = terms.filter(r => String(r[7]||'').includes('🔴')).length;
 
-  const metro = metroRows.slice(2).filter(r => r[1] && r[1].trim());
-  const rutas = rutasRows.filter(r => {
-    const f = String(r[0]||'').trim();
-    return f && !f.includes('RUTA PROVINCIAL') && f !== 'TAREA' &&
-           f !== 'TAREA PENDIENTE' && !f.includes('OBRAS PENDIENTES') && !f.includes('🛣');
-  });
+  const getPct = val => {
+    const s = String(val||'').trim();
+    const m = s.match(/(\d+)%\s*$/);
+    if (m) return parseInt(m[1]) / 100;
+    const n = parseFloat(s); return isNaN(n) ? 0 : n > 1 ? n/100 : n;
+  };
 
-  const pctMetro = metro.map(r => parseFloat(r[7]||0)).filter(v => !isNaN(v) && v >= 0 && v <= 1);
-  const pctRutas = rutas.map(r => parseFloat(r[3]||0)).filter(v => !isNaN(v) && v >= 0 && v <= 1);
-  const allPct = [...pctMetro, ...pctRutas];
+  const pctMetro = metro.map(r => getPct(r[8]||r[7]));
+  const pctRutas = rutas.map(r => getPct(r[4]||r[3]));
+  const allPct   = [...pctMetro, ...pctRutas].filter(v => v >= 0 && v <= 1);
   const avg = allPct.length ? Math.round(allPct.reduce((a,b)=>a+b,0)/allPct.length*100) : 0;
-  const enCurso = allPct.filter(v => v > 0 && v < 1).length;
+  const enCurso  = allPct.filter(v => v > 0 && v < 1).length;
+  const sinInic  = allPct.filter(v => v === 0).length;
+  const completas = allPct.filter(v => v >= 1).length;
 
   document.getElementById('metrics').innerHTML = `
-    <div class="metric green">
-      <div class="metric-label">Terminadas</div>
-      <div class="metric-value">${terms.length}</div>
-      <div class="metric-sub">${completados} completas · ${suspendidos} suspendidas</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Pendientes Metro</div>
-      <div class="metric-value">${metro.length}</div>
-      <div class="metric-sub">${metro.filter(r=>parseFloat(r[7]||0)===0).length} sin iniciar</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Pendientes Rutas</div>
-      <div class="metric-value">${rutas.length}</div>
-      <div class="metric-sub">${rutas.filter(r=>parseFloat(r[3]||0)===0).length} sin iniciar</div>
-    </div>
-    <div class="metric yellow">
-      <div class="metric-label">Avance promedio</div>
-      <div class="metric-value">${avg}%</div>
-      <div class="metric-sub">${enCurso} en curso</div>
-    </div>`;
+    <div class="metric"><div class="metric-accent blue"></div><div class="metric-icon blue">✅</div>
+      <div class="metric-body"><div class="metric-label">Terminadas</div><div class="metric-value">${terms.length}</div>
+      <div class="metric-sub">${completados} completas · ${suspendidos} suspendidas</div></div></div>
+    <div class="metric"><div class="metric-accent yellow"></div><div class="metric-icon yellow">🚧</div>
+      <div class="metric-body"><div class="metric-label">Pendientes Metro</div><div class="metric-value">${metro.length}</div>
+      <div class="metric-sub">${metro.filter(r=>getPct(r[8]||r[7])===0).length} sin iniciar</div></div></div>
+    <div class="metric"><div class="metric-accent green"></div><div class="metric-icon green">🛣️</div>
+      <div class="metric-body"><div class="metric-label">Pendientes Rutas</div><div class="metric-value">${rutas.length}</div>
+      <div class="metric-sub">${rutas.filter(r=>getPct(r[4]||r[3])===0).length} sin iniciar</div></div></div>
+    <div class="metric"><div class="metric-accent red"></div><div class="metric-icon red">📊</div>
+      <div class="metric-body"><div class="metric-label">Avance promedio</div><div class="metric-value">${avg}%</div>
+      <div class="metric-sub">${enCurso} en curso · ${completas} completas</div></div></div>`;
+
+  // Donut 1: terminadas vs pendientes totales
+  makeDonut('donut-estado',
+    [terms.length, metro.length + rutas.length],
+    ['Terminadas', 'Pendientes'],
+    ['#10B981', '#F59E0B'],
+    'donut-estado-legend'
+  );
+
+  // Donut 2: sin iniciar / en curso / completas
+  makeDonut('donut-avance',
+    [sinInic, enCurso, completas],
+    ['Sin iniciar', 'En curso', 'Completas'],
+    ['#EF4444', '#F97316', '#10B981'],
+    'donut-avance-legend'
+  );
+
+  // Bar: metro vs rutas (sin iniciar / en curso / completas)
+  const mSin   = pctMetro.filter(v=>v===0).length;
+  const mCurso = pctMetro.filter(v=>v>0&&v<1).length;
+  const mComp  = pctMetro.filter(v=>v>=1).length;
+  const rSin   = pctRutas.filter(v=>v===0).length;
+  const rCurso = pctRutas.filter(v=>v>0&&v<1).length;
+  const rComp  = pctRutas.filter(v=>v>=1).length;
+
+  makeBar('bar-zonas',
+    ['Sin iniciar', 'En curso', 'Completas'],
+    [
+      { label: 'Metropolitana', data: [mSin, mCurso, mComp], backgroundColor: '#2563EB', borderRadius: 5 },
+      { label: 'Rutas Prov.', data: [rSin, rCurso, rComp], backgroundColor: '#F59E0B', borderRadius: 5 },
+    ]
+  );
 }
 
 function renderTerminados(rows) {
-  const data = rows.slice(2).filter(r => r[1] && r[1].trim());
-  if (!data.length) { document.getElementById('terminados').innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
-  const trs = data.map(r => {
-    // Estado en col 7 (emoji), Fin en col 8 (fecha o texto como "Suspendido")
-    const estado = r[7] || '';
-    const fin = r[8] || '';
-    const finDisplay = String(fin).toLowerCase().includes('suspendido') ? '' : fmtDate(fin);
-    return `<tr>
-      <td style="max-width:340px;font-size:14px">${esc(r[1])}</td>
-      <td>${estadoBadge(estado)}</td>
-      <td style="white-space:nowrap">${finDisplay}</td>
-    </tr>`;
-  }).join('');
+  const data = rows.slice(2).filter(r => r[1]?.trim());
   document.getElementById('terminados').innerHTML = `
     <div class="tcard">
-      <div class="tcard-header">
-        <span class="tcard-header-icon">✅</span> Obras terminadas 2026
-        <span class="tcard-count">${data.length} registros</span>
-      </div>
+      <div class="tcard-header">✅ Obras terminadas 2026 <span class="tcard-count">${data.length} registros</span></div>
       <div class="table-wrap"><table>
         <thead><tr><th>Tarea</th><th>Estado</th><th>Fin</th></tr></thead>
-        <tbody>${trs}</tbody>
+        <tbody>${data.map(r => `<tr>
+          <td style="max-width:340px">${esc(r[1])}</td>
+          <td>${estadoBadge(r[7])}</td>
+          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[8])}</td>
+        </tr>`).join('')}</tbody>
       </table></div>
     </div>`;
 }
 
 function renderMetro(rows) {
-  const data = rows.slice(2).filter(r => r[1] && r[1].trim());
-  if (!data.length) { document.getElementById('metro').innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
-  const trs = data.map(r => `<tr>
-    <td style="white-space:nowrap">${fmtDate(r[0])}</td>
-    <td style="max-width:280px;font-size:14px">${esc(r[1])}</td>
-    <td style="white-space:nowrap">${fmtDate(r[6])}</td>
-    <td>${barHTML(r[8])}</td>
-    <td style="white-space:nowrap">${fmtDate(r[9])}</td>
-  </tr>`).join('');
+  const data = rows.slice(2).filter(r => r[1]?.trim());
   document.getElementById('metro').innerHTML = `
     <div class="tcard">
-      <div class="tcard-header">
-        <span class="tcard-header-icon">📍</span> Pendientes — Área Metropolitana
-        <span class="tcard-count">${data.length} registros</span>
-      </div>
+      <div class="tcard-header">📍 Pendientes — Área Metropolitana <span class="tcard-count">${data.length} registros</span></div>
       <div class="table-wrap"><table>
-        <thead><tr><th>Fecha</th><th>Tarea</th><th>Inicio</th><th style="min-width:170px">Avance</th><th>Fin</th></tr></thead>
-        <tbody>${trs}</tbody>
+        <thead><tr><th>Fecha</th><th>Tarea</th><th>Inicio</th><th style="min-width:160px">Avance</th><th>Fin</th></tr></thead>
+        <tbody>${data.map(r => `<tr>
+          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[0])}</td>
+          <td style="max-width:280px">${esc(r[1])}</td>
+          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[6])}</td>
+          <td>${barHTML(r[8])}</td>
+          <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[9])}</td>
+        </tr>`).join('')}</tbody>
       </table></div>
     </div>`;
 }
 
 function renderRutas(rows) {
-  let html = '';
-  let currentRuta = '';
-  let tableRows = '';
-  let hasRows = false;
-  let count = 0;
-
+  let html = ''; let currentRuta = ''; let tableRows = ''; let hasRows = false; let count = 0;
   function closeTable() {
-    if (hasRows) {
-      html += `<div class="tcard" style="margin-top:14px">
-        <div class="tcard-header">
-          <span class="tcard-header-icon">🛣️</span> ${esc(currentRuta)}
-          <span class="tcard-count">${count} registros</span>
-        </div>
-        <div class="table-wrap"><table>
-          <thead><tr><th>Tarea</th><th>Descripción</th><th style="min-width:170px">Avance</th><th>Fin</th></tr></thead>
-          <tbody>${tableRows}</tbody>
-        </table></div></div>`;
-      tableRows = ''; hasRows = false; count = 0;
-    }
+    if (!hasRows) return;
+    html += `<div class="tcard" style="margin-bottom:16px">
+      <div class="tcard-header">🛣️ ${esc(currentRuta)} <span class="tcard-count">${count} registros</span></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Tarea</th><th>Descripción</th><th style="min-width:160px">Avance</th><th>Fin</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table></div></div>`;
+    tableRows = ''; hasRows = false; count = 0;
   }
-
   rows.forEach(r => {
     const f = String(r[0]||'').trim();
     if (!f) return;
-    if (f.startsWith('RUTA PROVINCIAL') || (f.includes('RUTA') && f.includes('🛣'))) {
-      closeTable();
-      currentRuta = f.replace(/🛣️|🛣/g,'').trim();
-      return;
-    }
+    if (f.startsWith('RUTA PROVINCIAL') || (f.includes('RUTA') && f.includes('🛣'))) { closeTable(); currentRuta = f.replace(/🛣️|🛣/g,'').trim(); return; }
     if (f === 'TAREA' || f === 'TAREA PENDIENTE' || f.includes('OBRAS PENDIENTES')) return;
     tableRows += `<tr>
-      <td style="max-width:220px">${esc(r[0])}</td>
-      <td style="max-width:220px;color:var(--muted)">${esc(r[1])}</td>
+      <td style="max-width:200px">${esc(r[0])}</td>
+      <td style="max-width:200px;color:var(--muted)">${esc(r[1])}</td>
       <td>${barHTML(r[4])}</td>
-      <td style="white-space:nowrap">${fmtDate(r[5])}</td>
+      <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:12px">${fmtDate(r[5])}</td>
     </tr>`;
     hasRows = true; count++;
   });
   closeTable();
-
   document.getElementById('rutas').innerHTML = html || '<div class="loading-msg">Sin datos</div>';
 }
 
@@ -543,18 +494,35 @@ function showTab(id, btn) {
   btn.classList.add('active');
 }
 
-// Clock
+async function loadAll() {
+  const icon = document.getElementById('refresh-icon');
+  icon.classList.add('spinning');
+  try {
+    const [termRows, metroRows, rutasRows] = await Promise.all([
+      fetchCSV(URLS.terminados), fetchCSV(URLS.metro), fetchCSV(URLS.rutas)
+    ]);
+    renderMetrics(termRows, metroRows, rutasRows);
+    renderTerminados(termRows);
+    renderMetro(metroRows);
+    renderRutas(rutasRows);
+    const now = new Date();
+    document.getElementById('update-line').textContent =
+      'Última actualización: ' + now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}) +
+      ' · ' + now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+  } catch(e) {
+    ['terminados','metro','rutas'].forEach(id => {
+      document.getElementById(id).innerHTML = `<div class="error-msg">⚠ No se pudo cargar la información. Verificá la conexión e intentá de nuevo.</div>`;
+    });
+  } finally { icon.classList.remove('spinning'); }
+}
+
 function updateClock() {
   const now = new Date();
-  document.getElementById('clock').textContent =
-    now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  document.getElementById('datestr').textContent =
-    now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('clock').textContent = now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  document.getElementById('datestr').textContent = now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
 }
 updateClock();
 setInterval(updateClock, 1000);
-
-// Load data
 loadAll();
 </script>
 </body>
