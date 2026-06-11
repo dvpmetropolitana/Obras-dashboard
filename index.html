@@ -64,7 +64,8 @@ html, body { background: var(--bg); color: var(--text); font-family: 'Inter', sa
 .metric-sub { font-size: 11px; color: var(--muted); }
 
 /* Charts + lists row */
-.main-row { display: grid; grid-template-columns: 280px 280px 1fr; gap: 16px; align-items: start; }
+.main-row { display: grid; grid-template-columns: 1fr 520px; gap: 16px; align-items: start; }
+.charts-col { display: flex; flex-direction: column; }
 
 /* Donut card */
 .chart-card { background: var(--surface); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
@@ -110,6 +111,11 @@ tbody tr:hover td { background: #F8FAFC; }
 .badge-green { background: var(--green-lt); color: #065F46; }
 .badge-red   { background: var(--red-lt);   color: #991B1B; }
 
+
+.tab-btn { padding: 9px 18px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: var(--muted); background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.15s; margin-bottom: -2px; }
+.tab-btn:hover { color: var(--navy); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
 .update-line { text-align: right; font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
 .loading-msg { padding: 2rem; text-align: center; color: var(--muted); }
 .error-msg { margin: 1rem; padding: 12px 16px; background: var(--red-lt); color: var(--red); border-radius: 8px; font-size: 13px; }
@@ -153,44 +159,65 @@ tbody tr:hover td { background: #F8FAFC; }
     <div class="metric"><div class="metric-accent red"></div><div class="metric-icon red">📊</div><div><div class="metric-label">Avance promedio</div><div class="metric-value">—</div></div></div>
   </div>
 
-  <!-- Gráficos + listas -->
+  <!-- Listas + Gráficos -->
   <div class="main-row">
-    <!-- Donut 1 -->
-    <div class="chart-card">
-      <div class="chart-title">Estado general</div>
-      <div class="chart-sub">Terminadas vs. pendientes 2026</div>
-      <div class="donut-wrap">
-        <canvas id="donut-estado" width="180" height="180"></canvas>
-        <div class="donut-legend" id="donut-estado-legend"></div>
-      </div>
-    </div>
-
-    <!-- Donut 2 -->
-    <div class="chart-card">
-      <div class="chart-title">Avance de pendientes</div>
-      <div class="chart-sub">Distribución por estado de progreso</div>
-      <div class="donut-wrap">
-        <canvas id="donut-avance" width="180" height="180"></canvas>
-        <div class="donut-legend" id="donut-avance-legend"></div>
-      </div>
-    </div>
-
-    <!-- Listas -->
+    <!-- Listas izquierda -->
     <div class="lists-panel">
       <div class="list-card">
-        <div class="list-header">📍 Metropolitana <span class="list-count" id="cnt-metro">—</span></div>
+        <div class="list-header">📍 Pendientes Metropolitana <span class="list-count" id="cnt-metro">—</span></div>
         <div class="list-body" id="list-metro"></div>
       </div>
       <div class="list-card">
-        <div class="list-header">🛣️ Rutas 57 y 63 <span class="list-count" id="cnt-rutas">—</span></div>
+        <div class="list-header">🛣️ Pendientes Rutas 57 y 63 <span class="list-count" id="cnt-rutas">—</span></div>
         <div class="list-body" id="list-rutas"></div>
+      </div>
+    </div>
+
+    <!-- Donuts + bar derecha -->
+    <div class="charts-col">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <!-- Donut 1 -->
+        <div class="chart-card">
+          <div class="chart-title">Estado general</div>
+          <div class="chart-sub">Terminadas vs. pendientes</div>
+          <div class="donut-wrap">
+            <canvas id="donut-estado" width="150" height="150"></canvas>
+            <div class="donut-legend" id="donut-estado-legend"></div>
+          </div>
+        </div>
+        <!-- Donut 2 -->
+        <div class="chart-card">
+          <div class="chart-title">Avance pendientes</div>
+          <div class="chart-sub">Sin iniciar vs. en curso</div>
+          <div class="donut-wrap">
+            <canvas id="donut-avance" width="150" height="150"></canvas>
+            <div class="donut-legend" id="donut-avance-legend"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Bar chart terminadas por mes -->
+      <div class="chart-card" style="margin-top:16px">
+        <div class="chart-title">Obras terminadas por mes</div>
+        <div class="chart-sub">Cantidad de obras finalizadas en 2026</div>
+        <canvas id="bar-meses" height="110"></canvas>
       </div>
     </div>
   </div>
 
-  <!-- Terminados -->
-  <div class="tcard" id="tcard-terminados">
-    <div class="loading-msg">Cargando...</div>
+  <!-- Tabs Terminados -->
+  <div>
+    <div style="display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:16px">
+      <button class="tab-btn active" id="tab-btn-pend" onclick="showMainTab('pend',this)">🚧 Pendientes</button>
+      <button class="tab-btn" id="tab-btn-term" onclick="showMainTab('term',this)">✅ Terminadas</button>
+    </div>
+    <div id="tab-pend" style="display:block">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="pend-detail-wrap">
+        <div class="loading-msg">Cargando...</div>
+      </div>
+    </div>
+    <div id="tab-term" style="display:none">
+      <div class="tcard" id="tcard-terminados"><div class="loading-msg">Cargando...</div></div>
+    </div>
   </div>
 
   <div class="update-line" id="update-line"></div>
@@ -275,6 +302,14 @@ function makeDonut(id, data, labels, colors, legendId) {
     </div>`).join('');
 }
 
+
+function showMainTab(id, btn) {
+  document.getElementById('tab-pend').style.display = id === 'pend' ? 'block' : 'none';
+  document.getElementById('tab-term').style.display = id === 'term' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 async function loadAll() {
   const icon = document.getElementById('refresh-icon');
   icon.classList.add('spinning');
@@ -309,7 +344,38 @@ async function loadAll() {
 
     // Donuts
     makeDonut('donut-estado', [terms.length, metro.length + rutas.length], ['Terminadas','Pendientes'], ['#10B981','#F59E0B'], 'donut-estado-legend');
-    makeDonut('donut-avance', [sinInic, enCurso, completas], ['Sin iniciar','En curso','Completas'], ['#EF4444','#F97316','#10B981'], 'donut-avance-legend');
+    makeDonut('donut-avance', [sinInic, enCurso], ['Sin iniciar','En curso'], ['#EF4444','#F97316'], 'donut-avance-legend');
+
+    // Bar chart terminadas por mes
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const countByMonth = Array(12).fill(0);
+    terms.forEach(r => {
+      const fin = String(r[8]||'').trim();
+      // Try DD/MM/YYYY or YYYY-MM-DD
+      let month = -1;
+      const m1 = fin.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+      const m2 = fin.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m1) month = parseInt(m1[2]) - 1;
+      else if (m2) month = parseInt(m2[2]) - 1;
+      if (month >= 0 && month < 12) countByMonth[month]++;
+    });
+    if (charts['bar-meses']) charts['bar-meses'].destroy();
+    const ctxBar = document.getElementById('bar-meses').getContext('2d');
+    charts['bar-meses'] = new Chart(ctxBar, {
+      type: 'bar',
+      data: {
+        labels: meses,
+        datasets: [{ label: 'Terminadas', data: countByMonth, backgroundColor: '#2563EB', borderRadius: 5, borderSkipped: false }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10, family: 'Inter' } } },
+          y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 10 }, stepSize: 1 }, beginAtZero: true }
+        }
+      }
+    });
 
     // Lista Metro
     document.getElementById('cnt-metro').textContent = metro.length;
@@ -318,13 +384,70 @@ async function loadAll() {
       return `<div class="list-item"><div class="list-name">${esc(r[1])}</div>${barHTML(p)}</div>`;
     }).join('');
 
-    // Lista Rutas
+    // Lista Rutas con separadores por ruta
     document.getElementById('cnt-rutas').textContent = rutas.length;
-    document.getElementById('list-rutas').innerHTML = rutas.map(r => {
+    let rutaListHTML = '';
+    let lastRuta = '';
+    rutasRows.forEach(r => {
+      const f = String(r[0]||'').trim();
+      if (!f) return;
+      if (f.startsWith('RUTA PROVINCIAL') || (f.includes('RUTA') && f.includes('🛣'))) {
+        lastRuta = f.replace(/🛣️|🛣/g,'').trim();
+        rutaListHTML += `<div style="padding:7px 16px 4px;font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.8px;background:var(--bg);border-bottom:1px solid var(--border)">${esc(lastRuta)}</div>`;
+        return;
+      }
+      if (f === 'TAREA' || f === 'TAREA PENDIENTE' || f.includes('OBRAS PENDIENTES') || f.includes('🛣')) return;
       const p = getPct(r[4]||r[3]);
-      const nombre = String(r[0]||'').replace(/^RUTA \d+:\s*/i,'');
-      return `<div class="list-item"><div class="list-name">${esc(nombre)}</div>${barHTML(p)}</div>`;
-    }).join('');
+      const nombre = f.replace(/^RUTA \d+:\s*/i,'');
+      rutaListHTML += `<div class="list-item"><div class="list-name">${esc(nombre)}</div>${barHTML(p)}</div>`;
+    });
+    document.getElementById('list-rutas').innerHTML = rutaListHTML;
+
+    // Detalle pendientes Metro y Rutas en pestaña
+    document.getElementById('pend-detail-wrap').innerHTML = `
+      <div class="tcard">
+        <div class="tcard-header">📍 Pendientes Metropolitana <span class="tcard-count">${metro.length}</span></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Fecha</th><th>Tarea</th><th>Inicio</th><th style="min-width:140px">Avance</th><th>Fin</th></tr></thead>
+          <tbody>${metro.map(r => `<tr>
+            <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:11px">${fmtDate(r[0])}</td>
+            <td style="max-width:220px;font-size:12px">${esc(r[1])}</td>
+            <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:11px">${fmtDate(r[6])}</td>
+            <td>${barHTML(getPct(r[8]||r[7]))}</td>
+            <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:11px">${fmtDate(r[9])}</td>
+          </tr>`).join('')}</tbody>
+        </table></div>
+      </div>
+      <div>
+        ${(()=>{
+          let html2=''; let curR=''; let tRows=''; let hasR=false; let cnt=0;
+          function closeT2(){
+            if(!hasR)return;
+            html2+=\`<div class="tcard" style="margin-bottom:12px">
+              <div class="tcard-header">🛣️ \${esc(curR)} <span class="tcard-count">\${cnt}</span></div>
+              <div class="table-wrap"><table>
+                <thead><tr><th>Tarea</th><th>Descripción</th><th style="min-width:140px">Avance</th><th>Fin</th></tr></thead>
+                <tbody>\${tRows}</tbody>
+              </table></div></div>\`;
+            tRows='';hasR=false;cnt=0;
+          }
+          rutasRows.forEach(r=>{
+            const f=String(r[0]||'').trim();
+            if(!f)return;
+            if(f.startsWith('RUTA PROVINCIAL')||(f.includes('RUTA')&&f.includes('🛣'))){closeT2();curR=f.replace(/🛣️|🛣/g,'').trim();return;}
+            if(f==='TAREA'||f==='TAREA PENDIENTE'||f.includes('OBRAS PENDIENTES'))return;
+            tRows+=\`<tr>
+              <td style="max-width:180px;font-size:12px">\${esc(r[0])}</td>
+              <td style="max-width:160px;font-size:12px;color:var(--muted)">\${esc(r[1])}</td>
+              <td>\${barHTML(getPct(r[4]||r[3]))}</td>
+              <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:11px">\${fmtDate(r[5])}</td>
+            </tr>\`;
+            hasR=true;cnt++;
+          });
+          closeT2();
+          return html2;
+        })()}
+      </div>`;
 
     // Terminados
     document.getElementById('tcard-terminados').innerHTML = `
