@@ -423,12 +423,12 @@ async function loadAll() {
           let html2=''; let curR=''; let tRows=''; let hasR=false; let cnt=0;
           function closeT2(){
             if(!hasR)return;
-            html2+=\`<div class="tcard" style="margin-bottom:12px">
-              <div class="tcard-header">🛣️ \${esc(curR)} <span class="tcard-count">\${cnt}</span></div>
+            html2+=`<div class="tcard" style="margin-bottom:12px">
+              <div class="tcard-header">🛣️ ${esc(curR)} <span class="tcard-count">${cnt}</span></div>
               <div class="table-wrap"><table>
                 <thead><tr><th>Tarea</th><th>Descripción</th><th style="min-width:140px">Avance</th><th>Fin</th></tr></thead>
-                <tbody>\${tRows}</tbody>
-              </table></div></div>\`;
+                <tbody>${tRows}</tbody>
+              </table></div></div>`;
             tRows='';hasR=false;cnt=0;
           }
           rutasRows.forEach(r=>{
@@ -436,12 +436,12 @@ async function loadAll() {
             if(!f)return;
             if(f.startsWith('RUTA PROVINCIAL')||(f.includes('RUTA')&&f.includes('🛣'))){closeT2();curR=f.replace(/🛣️|🛣/g,'').trim();return;}
             if(f==='TAREA'||f==='TAREA PENDIENTE'||f.includes('OBRAS PENDIENTES'))return;
-            tRows+=\`<tr>
-              <td style="max-width:180px;font-size:12px">\${esc(r[0])}</td>
-              <td style="max-width:160px;font-size:12px;color:var(--muted)">\${esc(r[1])}</td>
-              <td>\${barHTML(getPct(r[4]||r[3]))}</td>
-              <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:11px">\${fmtDate(r[5])}</td>
-            </tr>\`;
+            tRows+=`<tr>
+              <td style="max-width:180px;font-size:12px">${esc(r[0])}</td>
+              <td style="max-width:160px;font-size:12px;color:var(--muted)">${esc(r[1])}</td>
+              <td>${barHTML(getPct(r[4]||r[3]))}</td>
+              <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:11px">${fmtDate(r[5])}</td>
+            </tr>`;
             hasR=true;cnt++;
           });
           closeT2();
