@@ -62,7 +62,7 @@ html, body { background: var(--bg); color: var(--text); font-family: 'Inter', sa
 
 /* Main row: lists left, charts right */
 .main-row { display: grid; grid-template-columns: 1fr 520px; gap: 16px; align-items: start; }
-.lists-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.lists-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 .charts-col { display: flex; flex-direction: column; gap: 16px; }
 .donuts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
@@ -163,13 +163,16 @@ tbody tr:hover td { background: #F8FAFC; }
         <div class="list-body" id="list-metro"></div>
       </div>
       <div class="list-card">
-        <div class="list-header">🛣️ Pendientes Rutas 57 y 63 <span class="list-count" id="cnt-rutas">—</span></div>
-        <div class="list-body" id="list-rutas"></div>
+        <div class="list-header">🛣️ Pendientes Ruta 57 <span class="list-count" id="cnt-r57">—</span></div>
+        <div class="list-body" id="list-r57"></div></div><div id="charts-under-r57" style="margin-top:16px"></div>
+      <div class="list-card">
+        <div class="list-header">🛣️ Pendientes Ruta 63 <span class="list-count" id="cnt-r63">—</span></div>
+        <div class="list-body" id="list-r63"></div>
       </div>
     </div>
 
     <!-- DERECHA: gráficos -->
-    <div class="charts-col">
+    <div class="charts-col" style="display:none">
       <div class="donuts-row">
         <div class="chart-card">
           <div class="chart-title">Estado general</div>
@@ -196,21 +199,13 @@ tbody tr:hover td { background: #F8FAFC; }
     </div>
   </div>
 
-  <!-- Pestañas Pendientes / Terminadas -->
-  <div>
-    <div style="display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:16px">
-      <button class="tab-btn active" onclick="showTab('pend',this)">🚧 Pendientes</button>
-      <button class="tab-btn" onclick="showTab('term',this)">✅ Terminadas</button>
-    </div>
-    <div id="tab-pend">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="pend-tables"></div>
-    </div>
-    <div id="tab-term" style="display:none">
-      <div class="tcard" id="tcard-terminados"><div class="loading-msg">Cargando...</div></div>
-    </div>
+  
+  <div id="tab-pend">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="pend-tables"></div>
   </div>
 
-  <div class="update-line" id="update-line"></div>
+  <div class="update-line"
+ id="update-line"></div>
 </div>
 
 <script>
@@ -373,6 +368,13 @@ function loadAll() {
         if (month >= 0 && month < 12) countByMonth[month]++;
       });
       makeBarMeses(countByMonth);
+      var target=document.getElementById('charts-under-r57');
+      var source=document.querySelector('.charts-col');
+      if(target && source && !target.dataset.moved){
+        source.style.display='flex';
+        target.appendChild(source);
+        target.dataset.moved='1';
+      }
 
       // Lista Metro
       document.getElementById('cnt-metro').textContent = metro.length;
@@ -380,7 +382,38 @@ function loadAll() {
         return '<div class="list-item"><div class="list-name">' + esc(r[1]) + '</div>' + barHTML(getPct(r[8]||r[7])) + '</div>';
       }).join('');
 
-      // Lista Rutas con separadores
+      
+      // Listas separadas Ruta 57 y Ruta 63
+      var r57HTML='', r63HTML='';
+      var c57=0, c63=0;
+      var rutaActual='';
+      rutasRows.forEach(function(r){
+        var f = String(r[0] || '').trim();
+        if(!f) return;
+
+        if (f.indexOf('57') >= 0 && (f.indexOf('RUTA') >= 0 || f.indexOf('PROVINCIAL') >= 0)) {
+          rutaActual='57'; return;
+        }
+        if (f.indexOf('63') >= 0 && (f.indexOf('RUTA') >= 0 || f.indexOf('PROVINCIAL') >= 0)) {
+          rutaActual='63'; return;
+        }
+
+        if (f === 'TAREA' || f === 'TAREA PENDIENTE' || f.indexOf('OBRAS PENDIENTES') >= 0 || f.indexOf('RUTA') >= 0) return;
+
+        var row = '<div class="list-item"><div class="list-name">' + esc(f) + '</div>' + barHTML(getPct(r[4]||r[3])) + '</div>';
+
+        if(rutaActual==='57'){ r57HTML += row; c57++; }
+        else if(rutaActual==='63'){ r63HTML += row; c63++; }
+      });
+
+      var e57=document.getElementById('list-r57');
+      var e63=document.getElementById('list-r63');
+      if(e57) e57.innerHTML=r57HTML;
+      if(e63) e63.innerHTML=r63HTML;
+      if(document.getElementById('cnt-r57')) document.getElementById('cnt-r57').textContent=c57;
+      if(document.getElementById('cnt-r63')) document.getElementById('cnt-r63').textContent=c63;
+
+// Lista Rutas con separadores
       document.getElementById('cnt-rutas').textContent = rutas.length;
       var rutaListHTML = '';
       rutasRows.forEach(function(r) {
