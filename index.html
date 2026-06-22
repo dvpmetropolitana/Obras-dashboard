@@ -265,24 +265,21 @@ function loadAll(){
     var metro=mRows.slice(2).filter(function(r){return r[1]&&r[1].trim();});
     var metroItems=metro.map(function(r){return{n:r[1],p:pct(r[7])};});
 
-    // Rutas — col 0=tarea, col 3=% (decimal directo)
-    var r57=[], r63=[], cur='';
+    // Rutas — cada fila de datos empieza con "RUTA 57:" o "RUTA 63:"
+    // col 3 = % (valor decimal directo: 0.8, 1.0, etc)
+    var r57=[], r63=[];
     rRows.forEach(function(r){
       var f=String(r[0]||'').trim();
       if(!f) return;
-      // Detectar encabezado de sección
-      if(f.indexOf('57')>=0&&(f.indexOf('RUTA')>=0||f.indexOf('N°')>=0)){cur='57';return;}
-      if(f.indexOf('63')>=0&&(f.indexOf('RUTA')>=0||f.indexOf('N°')>=0)){cur='63';return;}
-      // Saltar filas de encabezado de columnas y títulos generales
-      if(f==='TAREA'||f==='TAREA PENDIENTE'||f.indexOf('OBRAS PENDIENTES')>=0) return;
-      // Solo procesar filas con datos reales (empiezan con RUTA 57: o RUTA 63:)
-      if(f.indexOf('RUTA 57:')>=0){
-        var nombre=f.replace('RUTA 57:','').trim();
+      // Filas de datos Ruta 57
+      if(f.indexOf('RUTA 57:')===0){
+        var nombre=f.slice(8).trim();
         r57.push({n:nombre, p:pct(r[3])});
         return;
       }
-      if(f.indexOf('RUTA 63:')>=0){
-        var nombre=f.replace('RUTA 63:','').trim();
+      // Filas de datos Ruta 63
+      if(f.indexOf('RUTA 63:')===0){
+        var nombre=f.slice(8).trim();
         r63.push({n:nombre, p:pct(r[3])});
         return;
       }
